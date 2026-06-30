@@ -1,0 +1,25 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.000
+Today we're going to understand the Fourier series.
+
+2
+00:00:04.000 --> 00:00:09.500
+We start with a square wave, that flat signal that jumps between plus one and minus one.
+
+3
+00:00:09.500 --> 00:00:15.000
+The remarkable claim is that this square wave is really a sum of simple sine waves.
+
+4
+00:00:15.000 --> 00:00:21.000
+We add the first harmonic, then the third, then the fifth, each a pure sine of higher frequency.
+
+5
+00:00:21.000 --> 00:00:27.000
+As we keep adding odd harmonics, the running sum gets closer and closer to the square wave.
+
+6
+00:00:27.000 --> 00:00:32.000
+That convergence is the heart of Fourier analysis.

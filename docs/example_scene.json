@@ -1,0 +1,82 @@
+{
+  "format": "mmi-lite",
+  "version": "0.1",
+  "meta": {
+    "title": "Minimal example \u2014 one cube sliding right",
+    "fps": 30,
+    "duration_frames": 31,
+    "source": "example",
+    "coordinate_system": "right-handed-y-up",
+    "events": [
+      {
+        "t": 0,
+        "label": "start"
+      },
+      {
+        "t": 30,
+        "label": "end"
+      }
+    ]
+  },
+  "layers": [
+    {
+      "id": "demo",
+      "name": "Demo layer",
+      "color": "#5b8cff",
+      "visible": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "cube",
+      "layer": "demo",
+      "geometry": {
+        "kind": "box",
+        "size": [
+          1,
+          1,
+          1
+        ],
+        "face_colors": {
+          "px": "#B71234",
+          "nx": "#FF5800",
+          "py": "#FFFFFF",
+          "ny": "#FFD500",
+          "pz": "#009B48",
+          "nz": "#0046AD"
+        }
+      },
+      "track": [
+        {
+          "t": 0,
+          "position": [
+            -2.0,
+            0.0,
+            0.0
+          ],
+          "quaternion": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "t": 30,
+          "position": [
+            2.0,
+            0.0,
+            0.0
+          ],
+          "quaternion": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      ]
+    }
+  ],
+  "annotations": []
+}
