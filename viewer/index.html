@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MMI Viewer — dimension &amp; view dynamic process</title>
+<style>
+  :root { --bg:#0e0f13; --panel:#181a21; --ink:#e6e8ef; --muted:#9aa0ad; --accent:#5b8cff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+               font:13px/1.45 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  #app { display:grid; grid-template-columns: 1fr 280px; height:100%; }
+  #stage { position:relative; min-width:0; }
+  canvas { display:block; }
+  #hud { position:absolute; top:12px; left:12px; padding:6px 10px; background:rgba(0,0,0,.45);
+         border-radius:8px; font-weight:600; letter-spacing:.02em; pointer-events:none; }
+  #hud small { display:block; font-weight:400; color:var(--muted); }
+  #panel { background:var(--panel); padding:14px 14px 80px; overflow:auto; border-left:1px solid #23262f; }
+  #panel h1 { font-size:14px; margin:0 0 2px; }
+  #panel h2 { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted);
+              margin:18px 0 8px; border-top:1px solid #23262f; padding-top:12px; }
+  .row { display:flex; align-items:center; gap:8px; margin:6px 0; }
+  .row label { flex:1; }
+  input[type=range] { width:100%; accent-color: var(--accent); }
+  select, button { background:#22252e; color:var(--ink); border:1px solid #313640;
+                   border-radius:6px; padding:5px 8px; font:inherit; }
+  button { cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .swatch { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .muted { color:var(--muted); }
+  #timebar { position:absolute; left:12px; right:12px; bottom:12px; display:flex; align-items:center;
+             gap:10px; background:rgba(0,0,0,.45); padding:8px 12px; border-radius:10px; }
+  #timebar input[type=range] { flex:1; }
+  #frameLabel { font-variant-numeric: tabular-nums; min-width:96px; text-align:right; color:var(--muted); }
+  #drop { position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+          background:rgba(11,12,16,.85); font-size:16px; border:2px dashed var(--accent); }
+  kbd { background:#22252e; border:1px solid #313640; border-radius:4px; padding:0 5px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <div id="hud">—<small id="hudSub">loading…</small></div>
+    <div id="timebar">
+      <button id="playBtn" class="primary">▶</button>
+      <input id="time" type="range" min="0" max="0" value="0" step="1" />
+      <span id="frameLabel">0 / 0</span>
+    </div>
+    <div id="drop">Drop an mmi-lite <code>.json</code> scene to load</div>
+  </div>
+
+  <div id="panel">
+    <h1 id="title">MMI Viewer</h1>
+    <div class="muted" id="sub">interactive 4D process viewer</div>
+
+    <h2>Scene</h2>
+    <div class="row"><select id="sceneSelect" style="flex:1"></select></div>
+
+    <h2>Playback</h2>
+    <div class="row"><label for="speed">Speed</label>
+      <select id="speed">
+        <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+        <option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option>
+      </select>
+    </div>
+    <div class="row"><label for="loop">Loop</label><input id="loop" type="checkbox" checked /></div>
+
+    <h2>Layers</h2>
+    <div id="layers"></div>
+
+    <h2>Slice (clipping plane)</h2>
+    <div class="row"><label for="sliceAxis">Axis</label>
+      <select id="sliceAxis"><option value="-1">off</option>
+        <option value="0">X</option><option value="1">Y</option><option value="2">Z</option></select>
+    </div>
+    <div class="row"><input id="slicePos" type="range" min="-2.2" max="2.2" step="0.02" value="0" /></div>
+    <div class="row"><label for="sliceFlip">Flip side</label><input id="sliceFlip" type="checkbox" /></div>
+
+    <h2>View</h2>
+    <div class="row"><label for="annToggle">Annotations</label><input id="annToggle" type="checkbox" checked /></div>
+    <div class="row"><label for="gridToggle">Grid</label><input id="gridToggle" type="checkbox" checked /></div>
+    <div class="row"><button id="resetCam">Reset camera</button><button id="loadBtn">Load file…</button></div>
+    <input id="fileInput" type="file" accept="application/json,.json" hidden />
+
+    <h2>About</h2>
+    <p class="muted">Drag to orbit · scroll to zoom · right-drag to pan ·
+       <kbd>Space</kbd> play/pause · <kbd>←</kbd>/<kbd>→</kbd> step.</p>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+}}
+</script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
