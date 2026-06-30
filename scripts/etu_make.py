@@ -55,7 +55,7 @@ def main() -> int:
     ap.add_argument("--all", action="store_true", help="regenerate every sample scene")
     args = ap.parse_args()
 
-    outdir = Path("data/samples").resolve()
+    outdir = Path("data/samples")
     if args.all:
         print("regenerating ETU sample scenes:")
         for concept, params in SAMPLES.items():
@@ -66,11 +66,7 @@ def main() -> int:
         ap.error("give a concept (or use --all). available: " + ", ".join(available()))
     params = dict(kv.split("=", 1) for kv in args.param)
     params = {k: _coerce(v) for k, v in params.items()}
-    out = (args.out if args.out is not None else (outdir / f"{args.concept}.json")).resolve()
-    try:
-        out.relative_to(outdir)
-    except ValueError:
-        ap.error(f"--out must be inside {outdir}")
+    out = args.out or outdir / f"{args.concept}.json"
     make(args.concept, params, out)
     return 0
 
