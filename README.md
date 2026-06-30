@@ -2,8 +2,8 @@
 
 <a href="https://arxiv.org/abs/2401.12345"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-AI Pipelining for Dynamic 3D Model Creation-b31b1b?logo=arxiv&logoColor=white" /></a>
 [![PDF](https://img.shields.io/badge/Research_Gate-2401.12345-b31b1b.svg)](LINK_TO_PAPER)
-[![Paper](https://img.shields.io/badge/Elsiver-2401.12345-orange.svg)](LINK_TO_PAPER)
-[![Paper](https://img.shields.io/badge/SCOPUS-2401.12345-orange.svg)](LINK_TO_PAPER)
+[![Paper](https://img.shields.io/badge/ELSEVIER-2401.12345-orange.svg)](LINK_TO_PAPER)
+[![Paper](https://img.shields.io/badge/Scopus-2401.12345-orange.svg)](LINK_TO_PAPER)
 [![Paper](https://img.shields.io/badge/Google_Scholar-2401.12345-orange.svg)](LINK_TO_PAPER)
 [![Paper](https://img.shields.io/badge/IEEE-2401.12345-678910.svg)](LINK_TO_PAPER)
 [![DOI](https://img.shields.io/badge/DOI-1234567890-blue.svg)](LINK_TO_DOI)
