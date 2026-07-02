@@ -1,3 +1,0 @@
-The directory is used to store extracted critical frames from the video and a `manifest.json`.
-
-Thanks, and enjoy!
