@@ -7,7 +7,7 @@
 [![Paper](https://img.shields.io/badge/Google_Scholar-2401.12345-orange.svg)](LINK_TO_PAPER)
 [![Paper](https://img.shields.io/badge/IEEE-2401.12345-678910.svg)](LINK_TO_PAPER)
 [![DOI](https://img.shields.io/badge/DOI-1234567890-blue.svg)](LINK_TO_DOI)
-[![Conference](https://img.shields.io/badge/ICAIMS-2026-blue.svg)](https://enotice.mmsend.com/link.cfm?r=kvLsVn9rO4DWNSIMWcpnQA~~&pe=dUSyf-mtHzRGl6tKLycGSNHxvpkLf7C7Ur1JqH1_ums0yeIaO4AKl6ku18YU70Rxqc6KEkm2UcJcNKaQzlKbKA~~&t=ZYEqAxcGeKGqwNugwVaJFw~~)
+[![Conference](https://img.shields.io/badge/IICAIET-2026-blue.svg)](https://enotice.mmsend.com/link.cfm?r=kvLsVn9rO4DWNSIMWcpnQA~~&pe=dUSyf-mtHzRGl6tKLycGSNHxvpkLf7C7Ur1JqH1_ums0yeIaO4AKl6ku18YU70Rxqc6KEkm2UcJcNKaQzlKbKA~~&t=ZYEqAxcGeKGqwNugwVaJFw~~)
 [![Company name](https://img.shields.io/badge/github-BnB_Org-pink.svg)](https://github.com/BnB-GSorg)
 [![GitHub REPO](https://img.shields.io/badge/github-MCHIGM.svg)](https://github.com/BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation)
 
