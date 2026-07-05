@@ -216,3 +216,93 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# =============================================================================
+# C++ / CMake
+# =============================================================================
+
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# Compiled files
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.dylib
+*.exe
+*.out
+*.app
+*.dSYM/
+
+# CMake generated
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+install_manifest.txt
+CTestTestfile.cmake
+_deps/
+*.cmake
+!CMakeLists.txt
+
+# IDE - Visual Studio
+.vs/
+*.sln
+*.vcxproj*
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.aps
+ipch/
+*.pdb
+*.idb
+*.ilk
+
+# IDE - Xcode
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+
+# IDE - CLion
+.idea/
+cmake-build-*/
+
+# Precompiled headers
+*.gch
+*.pch
+
+# =============================================================================
+# Project-specific
+# =============================================================================
+
+# Files database - cache and large files
+files/cache/*
+!files/cache/.gitkeep
+files/assets/*.obj
+files/assets/*.ply
+files/assets/*.fbx
+files/assets/*.stl
+files/exports/*
+!files/exports/.gitkeep
+
+# Demo virtual environment
+demo/.venv/
+
+# Local configuration
+.env.local
+*.local.*
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

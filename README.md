@@ -112,7 +112,7 @@ If you use this work in your research, please cite:
 @inproceedings{etu2026,
   title={AI Pipelining for Dynamic 3D Model Creation},
   author={BnB .Org, Junming HUANG},
-  booktitle={IEEE ICAIMS},
+  booktitle={IEEE IICAIET},
   year={2026}
 }
 ```
@@ -128,11 +128,12 @@ Please read the AGENTS.md files in each directory for coding guidelines.
   <td rowspan="2" valign="middle">
     <img src="https://img.shields.io/badge/C/C++-00599C?style=for-the-badge&logo=c&logoColor=white" /><br>
     <img src="https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" />
-  </td  <td align="center"><img height="60" src="files/assets/logos/pytorch.svg" /></td>
-  <td align="center"><img height="60" src="files/assets/logos/numpy.svg" /></td>
+  </td>
+  <td align="center"><img height="60" src="files/assets/logos/pytorch.svg" /></td>
+  <td align="center"><img height="60" src="files/assets/logos/numpy.png" /></td>
   <td align="center"><img height="60" src="files/assets/logos/scipy.svg" /></td>
-  <td align="center"><img height="60" src="files/assets/logos/sympy.svg" /></td>
-  <td align="center"><img height="60" src="files/assets/logos/onnx.svg" /></td>d>
+  <td align="center"><img height="60" src="files/assets/logos/sympy.png" /></td>
+  <td align="center"><img height="60" src="files/assets/logos/onnx.svg" /></td>
 </tr>
 <tr>
   <td align="center"><sub><b>PyTorch</b></sub></td>

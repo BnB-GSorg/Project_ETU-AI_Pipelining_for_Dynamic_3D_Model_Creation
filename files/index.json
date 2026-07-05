@@ -1,0 +1,106 @@
+{
+  "$schema": "files-db-schema.json",
+  "version": "1.0.0",
+  "name": "ETU Files Database",
+  "description": "Database-like file organization for ETU project assets",
+  "created": "2024-01-01T00:00:00Z",
+  "modified": "2024-01-01T00:00:00Z",
+  "collections": {
+    "assets": {
+      "description": "Input assets (models, textures, point clouds)",
+      "path": "assets/",
+      "schema": {
+        "id": "string",
+        "name": "string",
+        "type": "enum(model, texture, pointcloud, image, other)",
+        "format": "string",
+        "size_bytes": "integer",
+        "created": "datetime",
+        "tags": "array<string>",
+        "metadata": "object"
+      },
+      "entries": [
+        {
+          "id": "logo-pytorch",
+          "name": "logos/pytorch.svg",
+          "type": "other",
+          "format": "svg",
+          "size_bytes": 466,
+          "created": "2024-01-01T00:00:00Z",
+          "tags": ["logo", "readme"]
+        },
+        {
+          "id": "logo-numpy",
+          "name": "logos/numpy.png",
+          "type": "other",
+          "format": "png",
+          "size_bytes": 18663,
+          "created": "2024-01-01T00:00:00Z",
+          "tags": ["logo", "readme"]
+        },
+        {
+          "id": "logo-scipy",
+          "name": "logos/scipy.svg",
+          "type": "other",
+          "format": "svg",
+          "size_bytes": 7318,
+          "created": "2024-01-01T00:00:00Z",
+          "tags": ["logo", "readme"]
+        },
+        {
+          "id": "logo-sympy",
+          "name": "logos/sympy.png",
+          "type": "other",
+          "format": "png",
+          "size_bytes": 28209,
+          "created": "2024-01-01T00:00:00Z",
+          "tags": ["logo", "readme"]
+        },
+        {
+          "id": "logo-onnx",
+          "name": "logos/onnx.svg",
+          "type": "other",
+          "format": "svg",
+          "size_bytes": 1812,
+          "created": "2024-01-01T00:00:00Z",
+          "tags": ["logo", "readme"]
+        }
+      ]
+    },
+    "cache": {
+      "description": "Cached intermediate results and preprocessed data",
+      "path": "cache/",
+      "schema": {
+        "id": "string",
+        "source_id": "string",
+        "type": "enum(features, embeddings, intermediate, compiled)",
+        "created": "datetime",
+        "expires": "datetime",
+        "size_bytes": "integer"
+      },
+      "entries": []
+    },
+    "exports": {
+      "description": "Generated outputs and exported models",
+      "path": "exports/",
+      "schema": {
+        "id": "string",
+        "name": "string",
+        "format": "enum(obj, ply, stl, gltf, glb, fbx)",
+        "source_assets": "array<string>",
+        "pipeline_config": "object",
+        "created": "datetime",
+        "size_bytes": "integer",
+        "vertices": "integer",
+        "faces": "integer"
+      },
+      "entries": []
+    }
+  },
+  "tags": [
+    "sample",
+    "test",
+    "production",
+    "benchmark"
+  ]
+}
