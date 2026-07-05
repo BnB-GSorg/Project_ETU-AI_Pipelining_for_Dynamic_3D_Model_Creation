@@ -1,0 +1,11 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+libdir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/lib
+includedir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/include
+
+Name: Graphite2
+Description: Font rendering engine for Complex Scripts
+Version: 3.3.1
+Libs: -LD:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/lib -lgraphite2
+Cflags: -ID:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/include
+

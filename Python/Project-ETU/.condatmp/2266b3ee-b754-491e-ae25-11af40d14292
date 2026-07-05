@@ -1,0 +1,8 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+includedir=${prefix}/include
+
+Name: cairo-png
+Description: PNG functions for cairo graphics library
+Version: 1.18.4
+Requires: cairo, libpng >=  1.4.0
+Cflags: -I${includedir}

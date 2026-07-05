@@ -55,6 +55,7 @@ full = [
 
 [project.scripts]
 etu-demo = "etu_demo.main:main"
+etu = "etu:main"
 
 [project.urls]
 Homepage = "https://github.com/BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation"

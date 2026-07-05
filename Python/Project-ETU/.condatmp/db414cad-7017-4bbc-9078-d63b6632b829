@@ -1,0 +1,12 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libbrotlienc
+URL: https://github.com/google/brotli
+Description: Brotli encoder library
+Version: 1.2.0
+Libs: -L${libdir} -lbrotlienc
+Requires.private: libbrotlicommon >= 1.2.0
+Cflags: -I${includedir}

@@ -1,0 +1,12 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/lib
+includedir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/include
+
+Name: libavdevice
+Description: FFmpeg device handling library
+Version: 62.3.102
+Requires: 
+Conflicts:
+Libs: -L${libdir}  -lavdevice 
+Cflags: -I${includedir}

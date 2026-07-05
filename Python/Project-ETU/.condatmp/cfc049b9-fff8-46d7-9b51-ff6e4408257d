@@ -1,0 +1,10 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: qhullstatic_r
+Description: Qhull reentrant static library
+Version: 8.0.2
+Libs: -L${libdir} -lqhullstatic_r
+Cflags: -I${includedir}
+

@@ -1,0 +1,10 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Vulkan-Loader
+Description: Vulkan Loader
+Version: 1.4.341
+Libs: -L${libdir} -lvulkan-1
+Cflags: -I${includedir}

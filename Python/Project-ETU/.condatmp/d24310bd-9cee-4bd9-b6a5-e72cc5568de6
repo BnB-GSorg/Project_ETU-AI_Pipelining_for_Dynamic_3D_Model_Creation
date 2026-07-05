@@ -1,0 +1,13 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+libdir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/lib
+includedir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/include
+ccompiler=C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+
+Name: netCDF
+Description: NetCDF Client Library for C
+URL: https://www.unidata.ucar.edu/netcdf
+Version: 4.10.0
+Libs: -L${libdir} -lnetcdf
+Libs.private: -ljpeg -lhdf -lmfhdf -lHDF5::HDF5 -lhdf5::hdf5_hl -lz -lzip -lblosc -ldebug -lzstd -loptimized -lzstd -lbz2 -lszip -lCURL::libcurl -lxml2
+Cflags: -I${includedir}

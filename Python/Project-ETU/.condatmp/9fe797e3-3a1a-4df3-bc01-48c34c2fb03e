@@ -1,0 +1,15 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+symbol_prefix=
+bindir=${exec_prefix}/bin
+libdir=${exec_prefix}/lib
+sharedlibdir=${libdir}
+includedir=${prefix}/include
+
+Name: zlib-ng
+Description: zlib-ng compression library
+Version: 2.3.3
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz-ng
+Cflags: -I${includedir} -DWITH_GZFILEOP

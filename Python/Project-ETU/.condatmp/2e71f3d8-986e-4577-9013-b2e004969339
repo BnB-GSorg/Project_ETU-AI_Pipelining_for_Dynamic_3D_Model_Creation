@@ -1,0 +1,14 @@
+# sdl2_compat pkg-config source file
+
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/lib
+includedir=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/include
+
+Name: sdl2_compat
+Description: An SDL2 compatibility layer that uses SDL3 behind the scenes.
+Version: 2.32.56
+Provides: sdl2 = 2.32.56
+Libs: -L${libdir}  -lSDL2main -lSDL2
+#Libs.private: -lshell32
+Cflags: -I${includedir} -I${includedir}/SDL2 

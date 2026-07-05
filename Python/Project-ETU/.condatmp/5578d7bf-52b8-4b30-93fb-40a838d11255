@@ -1,0 +1,13 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+bindir=${prefix}/bin
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+zipcmp=${bindir}/zipcmp
+
+Name: libzip
+Description: library for handling zip archives
+Version: 1.11.2
+Libs:  -L${libdir} -lzip
+Cflags: -I${includedir}

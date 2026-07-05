@@ -1,0 +1,10 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libhwy-contrib
+Description: Additions to Highway: dot product, image, math, sort
+Version: 1.4.0
+Libs: -L${libdir} -lhwy_contrib  
+Cflags: -I${includedir}  

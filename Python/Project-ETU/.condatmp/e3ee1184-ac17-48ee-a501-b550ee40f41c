@@ -1,0 +1,9 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: double-conversion
+Description: Binary-decimal and decimal-binary routines for IEEE doubles
+Version: 3.4.0
+Libs: -L${libdir} -ldouble-conversion
+Cflags: -I${includedir}

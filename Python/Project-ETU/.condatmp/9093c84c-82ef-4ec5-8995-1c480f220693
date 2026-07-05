@@ -1,0 +1,14 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libraw
+Description: Raw image decoder library (thread-safe)
+URL: http://www.libraw.org
+Requires:
+Version: 0.22.1
+Libs: -L${libdir} -lraw_r
+Cflags: -I${includedir} -I${includedir}/libraw
+Libs.private: 
+Requires.private:  lcms2 zlib libjpeg

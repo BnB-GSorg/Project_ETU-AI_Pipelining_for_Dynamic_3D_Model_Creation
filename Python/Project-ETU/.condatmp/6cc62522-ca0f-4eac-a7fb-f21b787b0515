@@ -1,0 +1,11 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: XCB RandR
+Description: XCB RandR Extension
+Version: 1.17.0
+Requires.private: xcb xcb-render
+Libs: -L${libdir} -lxcb-randr
+Cflags: -I${includedir}

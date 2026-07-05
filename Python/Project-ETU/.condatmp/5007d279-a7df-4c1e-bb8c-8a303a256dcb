@@ -1,0 +1,11 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libwebpdemux
+Description: Library for parsing the WebP graphics format container
+Version: 1.6.0
+Requires.private: libwebp >= 0.2.0
+Cflags: -I${includedir}
+Libs: -L${libdir} -llibwebpdemux

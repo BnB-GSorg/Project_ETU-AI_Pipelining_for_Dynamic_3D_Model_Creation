@@ -1,0 +1,11 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: GThread
+Description: Thread support for GLib
+Version: 2.88.2
+Requires: glib-2.0
+Libs: -L${libdir} -lgthread-2.0
+Libs.private: -lintl -liconv
+Cflags: -I${includedir}

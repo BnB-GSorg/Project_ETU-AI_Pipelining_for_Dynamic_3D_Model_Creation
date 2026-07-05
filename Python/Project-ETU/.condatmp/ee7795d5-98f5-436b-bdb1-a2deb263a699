@@ -1,0 +1,13 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: JasPer
+Description: Image Processing/Coding Tool Kit with JPEG-2000 Support
+Version: 4.2.9
+
+Libs: -L${libdir} -ljasper
+Requires.private: libjpeg
+Cflags: -I${includedir}/jasper -I${includedir}
+Cflags.private: -DLIBJASPER_STATIC_DEFINE

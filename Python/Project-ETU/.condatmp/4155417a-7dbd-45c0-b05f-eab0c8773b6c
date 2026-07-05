@@ -1,0 +1,63 @@
+# NetCDF C Configuration Summary
+==============================
+
+# General
+-------
+NetCDF Version:		4.10.0
+Dispatch Version:       5
+Configured On:		Sat Jul  4 19:10:22 UTC 2026
+Host System:		x86_64-MSYS_NT-10.0-20348-3.6.1-28176974.x86_64
+Build Directory: 	
+Install Prefix:         D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+
+# Compiling Options
+-----------------
+C Compiler:		C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+CFLAGS:			-DH5_BUILT_AS_DYNAMIC_LIB /O2 /Ob2 /DNDEBUG
+CPPFLAGS:		 
+LDFLAGS:		/machine:x64 /LARGEADDRESSAWARE /STACK:40000000 /INCREMENTAL:NO
+AM_CFLAGS:		
+AM_CPPFLAGS:		
+AM_LDFLAGS:		
+Shared Library:		yes
+Static Library:		no
+Extra libraries:	-ljpeg -lhdf -lmfhdf -lHDF5::HDF5 -lhdf5::hdf5_hl -lz -lzip -lblosc -ldebug -lzstd -loptimized -lzstd -lbz2 -lszip -lCURL::libcurl -lxml2
+XML Parser:             libxml2
+Legacy Macros:          yes
+
+# Features
+--------
+Benchmarks:		no
+NetCDF-2 API:		yes
+HDF4 Support:		yes
+HDF5 Support:		yes
+CDF5 Support:		yes
+NC-4 Parallel Support:	no
+PnetCDF Support:	no
+
+DAP2 Support:		yes
+DAP4 Support:		yes
+Byte-Range Support:	yes
+
+S3 Support:	        no
+S3 SDK:  	        none
+
+NCZarr Support:		yes
+NCZarr Zip Support:     yes
+
+Diskless Support:	yes
+MMap Support:		no
+ERANGE Fill Support:	yes
+Relaxed Boundary Check:	yes
+
+Plugins Enabled:        yes
+Plugin Install Dir:     D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/hdf5/lib/plugin
+Plugin Search Path:     D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/hdf5/lib/plugin;C:/ProgramData/hdf5/lib/plugin
+UDF Self-Load:          yes
+
+Quantization:		yes
+Logging:     		no
+SZIP Write Support:     yes
+Standard Filters:       deflate szip blosc zstd bz2
+ZSTD Support:           yes
+Parallel Filters:       yes

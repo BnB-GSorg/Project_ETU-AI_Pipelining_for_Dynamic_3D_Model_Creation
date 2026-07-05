@@ -1,0 +1,8 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+includedir=${prefix}/include
+
+Name: cairo-script
+Description: script surface backend for cairo graphics library
+Version: 1.18.4
+Requires: cairo, zlib
+Cflags: -I${includedir}
