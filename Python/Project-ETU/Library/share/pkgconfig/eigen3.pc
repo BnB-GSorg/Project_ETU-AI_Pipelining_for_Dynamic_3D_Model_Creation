@@ -1,0 +1,9 @@
+prefix=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library
+exec_prefix=${prefix}
+
+Name: Eigen3
+Description: A C++ template library for linear algebra: vectors, matrices, and related algorithms
+Requires:
+Version: 5.0.1
+Libs:
+Cflags: -I${prefix}/include/eigen3

@@ -1,0 +1,4 @@
+[Thumbnailer Entry]
+TryExec=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/bin/gdk-pixbuf-thumbnailer
+Exec=D:/Projects/Project ETU/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/Python/Project-ETU/Library/bin/gdk-pixbuf-thumbnailer -s %s %u %o
+MimeType=image/svg+xml;image/svg+xml-compressed;

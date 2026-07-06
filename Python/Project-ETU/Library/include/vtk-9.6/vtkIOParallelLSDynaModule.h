@@ -1,0 +1,48 @@
+
+#ifndef VTKIOPARALLELLSDYNA_EXPORT_H
+#define VTKIOPARALLELLSDYNA_EXPORT_H
+
+#ifdef VTKIOPARALLELLSDYNA_STATIC_DEFINE
+#  define VTKIOPARALLELLSDYNA_EXPORT
+#  define VTKIOPARALLELLSDYNA_NO_EXPORT
+#else
+#  ifndef VTKIOPARALLELLSDYNA_EXPORT
+#    ifdef IOParallelLSDyna_EXPORTS
+        /* We are building this library */
+#      define VTKIOPARALLELLSDYNA_EXPORT __declspec(dllexport)
+#    else
+        /* We are using this library */
+#      define VTKIOPARALLELLSDYNA_EXPORT __declspec(dllimport)
+#    endif
+#  endif
+
+#  ifndef VTKIOPARALLELLSDYNA_NO_EXPORT
+#    define VTKIOPARALLELLSDYNA_NO_EXPORT 
+#  endif
+#endif
+
+#ifndef VTKIOPARALLELLSDYNA_DEPRECATED
+#  define VTKIOPARALLELLSDYNA_DEPRECATED __declspec(deprecated)
+#endif
+
+#ifndef VTKIOPARALLELLSDYNA_DEPRECATED_EXPORT
+#  define VTKIOPARALLELLSDYNA_DEPRECATED_EXPORT VTKIOPARALLELLSDYNA_EXPORT VTKIOPARALLELLSDYNA_DEPRECATED
+#endif
+
+#ifndef VTKIOPARALLELLSDYNA_DEPRECATED_NO_EXPORT
+#  define VTKIOPARALLELLSDYNA_DEPRECATED_NO_EXPORT VTKIOPARALLELLSDYNA_NO_EXPORT VTKIOPARALLELLSDYNA_DEPRECATED
+#endif
+
+/* NOLINTNEXTLINE(readability-avoid-unconditional-preprocessor-if) */
+#if 0 /* DEFINE_NO_DEPRECATED */
+#  ifndef VTKIOPARALLELLSDYNA_NO_DEPRECATED
+#    define VTKIOPARALLELLSDYNA_NO_DEPRECATED
+#  endif
+#endif
+
+/* VTK-HeaderTest-Exclude: vtkIOParallelLSDynaModule.h */
+
+/* Include ABI Namespace */
+#include "vtkABINamespace.h"
+
+#endif /* VTKIOPARALLELLSDYNA_EXPORT_H */

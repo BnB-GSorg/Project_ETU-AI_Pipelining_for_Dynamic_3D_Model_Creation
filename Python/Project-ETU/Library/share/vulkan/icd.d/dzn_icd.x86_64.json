@@ -1,0 +1,8 @@
+{
+    "ICD": {
+        "api_version": "1.1.335",
+        "library_arch": "64",
+        "library_path": "..\\..\\..\\bin\\vulkan_dzn.dll"
+    },
+    "file_format_version": "1.0.1"
+}
