@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETU Step-Motion 3D Viewer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; }
+  #controls {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 12px; align-items: center; z-index: 10;
+    background: rgba(0,0,0,0.75); padding: 14px 24px; border-radius: 40px;
+    backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.12);
+  }
+  #controls button {
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08); color: #fff; font-size: 20px;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+  }
+  #controls button:hover { background: rgba(255,255,255,0.18); transform: scale(1.08); }
+  #controls button:active { transform: scale(0.94); }
+  #frame-label { color: #fff; font-size: 18px; font-weight: 600; min-width: 140px; text-align: center;
+    letter-spacing: 0.5px; }
+  #frame-indicator { color: #aaa; font-size: 13px; text-align: center; }
+  #info {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.5); font-size: 13px; z-index: 10;
+    pointer-events: none;
+  }
+  #loading {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    color: #fff; font-size: 22px; z-index: 100; transition: opacity 0.4s;
+  }
+  #autoplay-btn {
+    background: rgba(100,200,255,0.15) !important; border-color: rgba(100,200,255,0.4) !important;
+  }
+  #autoplay-btn.active { background: rgba(100,200,255,0.45) !important; }
+</style>
+</head>
+<body>
+
+<div id="info">🖱️ Drag to rotate &bull; Scroll to zoom &bull; Right-drag to pan</div>
+<div id="loading">Loading frames...</div>
+
+<div id="controls">
+  <button id="prev-btn" title="Previous frame (←)">◀</button>
+  <div>
+    <div id="frame-label">1 / 10</div>
+    <div id="frame-indicator">frame_0000.obj</div>
+  </div>
+  <button id="next-btn" title="Next frame (→)">▶</button>
+  <button id="autoplay-btn" title="Autoplay (Space)">▶▶</button>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+
+const FRAME_COUNT = 10;
+const frames = [];
+let currentFrame = 0;
+let autoplay = false;
+let autoplayTimer = null;
+let currentMesh = null;
+const AUTOPLAY_INTERVAL = 150;
+
+// ── Three.js setup ──────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#1a1a2e');
+scene.fog = new THREE.Fog('#1a1a2e', 5, 20);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(3.5, 2.5, 4.5);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0, 0, 0);
+controls.update();
+
+// ── Lighting ─────────────────────────────────────────────────
+const ambient = new THREE.AmbientLight('#8899cc', 1.2);
+scene.add(ambient);
+const key = new THREE.DirectionalLight('#ffffff', 3.5);
+key.position.set(5, 8, 4);
+key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024);
+scene.add(key);
+const fill = new THREE.DirectionalLight('#6688cc', 1.2);
+fill.position.set(-3, 1, -2);
+scene.add(fill);
+const rim = new THREE.DirectionalLight('#ff9966', 1.0);
+rim.position.set(0, -0.5, 4);
+scene.add(rim);
+
+// ── Grid ─────────────────────────────────────────────────────
+const grid = new THREE.GridHelper(8, 20, '#333355', '#222244');
+scene.add(grid);
+
+// ── Load all OBJ frames ──────────────────────────────────────
+const loader = new OBJLoader();
+const loadPromises = [];
+const colors = [
+  0x66ccff, 0x99ccff, 0x6699ff, 0x9966ff,
+  0xcc66ff, 0xff66cc, 0xff9966, 0xffcc66,
+  0x66ff99, 0x66ffcc
+];
+
+for (let i = 0; i < FRAME_COUNT; i++) {
+  const url = `frame_${String(i).padStart(4, '0')}.obj`;
+  const color = colors[i % colors.length];
+  const promise = new Promise((resolve) => {
+    loader.load(
+      url,
+      (obj) => {
+        obj.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshStandardMaterial({
+              color: color,
+              roughness: 0.35,
+              metalness: 0.15,
+              flatShading: false,
+            });
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        frames[i] = obj;
+        resolve();
+      },
+      undefined,
+      () => { frames[i] = null; resolve(); }  // skip missing frames
+    );
+  });
+  loadPromises.push(promise);
+}
+
+await Promise.all(loadPromises);
+
+// Hide loading
+document.getElementById('loading').style.opacity = '0';
+setTimeout(() => document.getElementById('loading').remove(), 500);
+
+// ── Display a frame ──────────────────────────────────────────
+function showFrame(index) {
+  if (currentMesh) scene.remove(currentMesh);
+  currentFrame = ((index % FRAME_COUNT) + FRAME_COUNT) % FRAME_COUNT;
+  const obj = frames[currentFrame];
+  if (obj) {
+    currentMesh = obj.clone();
+    scene.add(currentMesh);
+  }
+  document.getElementById('frame-label').textContent = `${currentFrame + 1} / ${FRAME_COUNT}`;
+  document.getElementById('frame-indicator').textContent =
+    `frame_${String(currentFrame).padStart(4, '0')}.obj`;
+}
+
+// ── Button handlers ──────────────────────────────────────────
+document.getElementById('prev-btn').onclick = () => showFrame(currentFrame - 1);
+document.getElementById('next-btn').onclick = () => showFrame(currentFrame + 1);
+
+const autoplayBtn = document.getElementById('autoplay-btn');
+autoplayBtn.onclick = () => {
+  autoplay = !autoplay;
+  autoplayBtn.classList.toggle('active', autoplay);
+  if (autoplay) {
+    autoplayTimer = setInterval(() => showFrame(currentFrame + 1), AUTOPLAY_INTERVAL);
+  } else {
+    clearInterval(autoplayTimer);
+  }
+};
+
+// ── Keyboard shortcuts ───────────────────────────────────────
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  switch (e.key) {
+    case 'ArrowLeft': showFrame(currentFrame - 1); break;
+    case 'ArrowRight': showFrame(currentFrame + 1); break;
+    case ' ':
+      e.preventDefault();
+      autoplayBtn.click();
+      break;
+  }
+});
+
+// ── Render loop ──────────────────────────────────────────────
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  // subtle auto-rotation when autoplay is off
+  if (!autoplay) {
+    currentMesh && currentMesh.rotateY(0.003);
+  }
+  renderer.render(scene, camera);
+}
+
+// ── Start ────────────────────────────────────────────────────
+showFrame(0);
+animate();
+
+// Resize handler
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+console.log('✅ ETU 3D Viewer ready — 10 frames loaded');
+console.log('   ← → arrow keys to step, Space to autoplay');
+</script>
+</body>
+</html>

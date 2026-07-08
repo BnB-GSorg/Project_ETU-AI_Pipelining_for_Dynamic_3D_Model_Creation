@@ -1,90 +1,70 @@
-# Demo Module - Agent Instructions
+# Python Module — Agent Instructions
 
-This directory contains the **Python demo implementation** of the ETU AI pipeline. Use this for rapid prototyping, research experiments, and as a reference implementation.
+This file provides agent-level context for the **entire Python module** of the ETU AI Pipelining project. It covers three independent sub-projects sharing a single Conda runtime.
+
+## Module Structure
+
+```
+Python/
+├── demo/          → Step-motion video demo (Open CASCADE)
+├── MVP/           → Theoretical pipeline (6-stage, pip-installable)
+├── src/           → Full engine (CLI + 16 libs + ModelEngine)
+├── Project-ETU/   → Conda venv — Python 3.14 runtime (NOT source code)
+├── pyproject.toml → Build config (pending update)
+└── Python.agent.md → This file
+```
+
+> See `Python.md` for the full structure reference.
+
+## Which Implementation to Use?
+
+| When you need to... | Work in |
+|--------------------|---------|
+| Generate step-motion video, quick visual demos | `demo/` |
+| Theoretical validation, structured 6-stage pipeline, tests | `MVP/` |
+| Full engine, CLI, library modules, ModelEngine | `src/` |
+
+The three implementations are **independent** — do not cross-import between them.
+
+## Coding Guidelines (All Sub-Projects)
+
+1. **Type hints required** — All functions must have type annotations
+2. **Docstrings required** — Google-style docstrings for public API
+3. **Use dataclasses** — For data containers
+4. **NumPy for arrays** — Prefer numpy over Python lists
+5. **Lazy imports** — Import heavy deps (torch, trimesh) inside functions
+6. **Test coverage** — Add tests for new features
+7. **Never modify `Project-ETU/`** — It is the Conda runtime, not source code
 
 ## Quick Reference
 
 | Action | Command |
 |--------|---------|
-| Install | `pip install -e .` |
-| Install (dev) | `pip install -e ".[dev]"` |
-| Run | `etu-demo input.png -o output.obj` |
-| Test | `pytest` |
-| Lint | `ruff check src/` |
-| Format | `black src/ tests/` |
-| Type check | `mypy src/` |
+| Run demo | `python Python/demo/main.py` |
+| Run MVP CLI | `etu-demo input.png -o output.obj` |
+| Run engine CLI | `python Python/src/etu.py <function> [args]` |
+| Test (MVP) | `pytest Python/MVP/tests/` |
+| Lint | `ruff check Python/MVP/etu_demo/` |
+| Format | `black Python/MVP/etu_demo/ Python/MVP/tests/` |
+| Type check | `mypy Python/MVP/etu_demo/` |
 
-## Directory Structure
+## MVP Pipeline (Reference)
 
-```
-demo/
-├── pyproject.toml          # Project config (dependencies, tools)
-├── requirements.txt        # Pip fallback
-├── src/etu_demo/           # Main package
-│   ├── __init__.py         # Package exports
-│   ├── main.py             # CLI entry point
-│   ├── pipeline.py         # Core pipeline logic
-│   └── utils.py            # I/O and helpers
-└── tests/
-    └── test_pipeline.py    # Unit tests
-```
+The MVP implements a 6-stage pipeline via the `PipelineStage` enum:
+1. `INPUT` — Load and validate input
+2. `PREPROCESS` — Normalize, extract features
+3. `INFERENCE` — Run AI model
+4. `POSTPROCESS` — Generate mesh (marching cubes)
+5. `RENDERING` — Compute normals, prepare buffers
+6. `OUTPUT` — Final model
 
-## Key Classes
-
-### `Pipeline`
-Main processing pipeline. Stages:
-1. `INPUT` - Load and validate input
-2. `PREPROCESS` - Normalize, extract features
-3. `INFERENCE` - Run AI model
-4. `POSTPROCESS` - Generate mesh (marching cubes)
-5. `RENDERING` - Compute normals, prepare buffers
-6. `OUTPUT` - Final model
-
-### `PipelineConfig`
-Configuration dataclass:
-- `use_gpu: bool` - Enable GPU acceleration
-- `quality: float` - Quality level (0.0-1.0)
-- `batch_size: int` - Batch processing size
-- `max_vertices: int` - Vertex limit
-- `max_triangles: int` - Triangle limit
-
-### `Model`
-Output model dataclass:
-- `vertices: np.ndarray` - (N, 3) positions
-- `faces: np.ndarray` - (M, 3) triangle indices
-- `normals: np.ndarray` - (N, 3) vertex normals
-- `uvs: np.ndarray` - (N, 2) texture coordinates
-
-## Coding Guidelines
-
-1. **Type hints required** - All functions must have type annotations
-2. **Docstrings required** - Google-style docstrings for public API
-3. **Use dataclasses** - For data containers
-4. **NumPy for arrays** - Prefer numpy over Python lists
-5. **Lazy imports** - Import heavy deps (torch, trimesh) inside functions
-6. **Test coverage** - Add tests for new features
-
-## Adding New Features
-
-1. Create feature branch
-2. Implement in appropriate module
-3. Add type hints and docstrings
-4. Add unit tests in `tests/`
-5. Run `pytest`, `ruff`, `mypy`
-6. Update README if needed
+Key classes: `PipelineConfig` (GPU, quality, batch size, limits), `Model` (vertices, faces, normals, UVs).
 
 ## Dependencies
 
-Core:
-- `numpy` - Array operations
-- `torch` - AI inference (optional but recommended)
-- `trimesh` - Mesh I/O
-- `pillow` - Image loading
-
-Optional:
-- `open3d` - Point cloud processing
-- `scikit-image` - Marching cubes
-- `matplotlib` - Visualization
+Core: `numpy`, `torch`, `trimesh`, `pillow`, `tqdm`
+Dev: `pytest`, `pytest-cov`, `black`, `ruff`, `mypy`
+Viz: `matplotlib`, `open3d`, `pyglet`
 
 ## Environment Variables
 
@@ -96,17 +76,17 @@ Optional:
 
 ## Common Tasks
 
-### Add new input format
+### Add new input format (MVP)
 1. Add loader in `utils.py` → `load_input()`
 2. Register extension in the suffix check
 3. Add test case
 
-### Modify pipeline stage
+### Modify pipeline stage (MVP)
 1. Edit method in `pipeline.py`
 2. Update `_execute_pipeline()` if changing flow
 3. Update tests
 
-### Add CLI option
+### Add CLI option (MVP)
 1. Add argument in `main.py` → `create_parser()`
 2. Pass to `PipelineConfig`
 3. Document in `--help`
