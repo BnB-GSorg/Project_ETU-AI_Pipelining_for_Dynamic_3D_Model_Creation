@@ -1,0 +1,19 @@
+# Core (required) — pipeline orchestration, synthetic generator, assemble.
+numpy>=1.24
+
+# Keyframe selection without OpenCV (Pillow fallback). Either this or opencv.
+Pillow>=9.0
+
+# Optional — faster ingest/keyframes and the COLMAP path.
+# opencv-python>=4.8
+
+# Optional — OCR of keyframes for ETU comprehension (--frames). Needs the
+# tesseract binary too (`brew install tesseract`). Transcript-only works without it.
+# pytesseract>=0.3.10
+
+# ETU comprehension (E3) calls DeepSeek via plain HTTP (urllib) — no SDK needed.
+# Just set DEEPSEEK_API_KEY in your environment.
+
+# GPU stages (3DGS / Dynamic-NeRF / Diffusion4D) are installed separately on the
+# GPU box; they are intentionally NOT pinned here. See docs/ROADMAP.md M3.
+#   torch, the chosen gaussian-splatting / nerf trainer, etc.
