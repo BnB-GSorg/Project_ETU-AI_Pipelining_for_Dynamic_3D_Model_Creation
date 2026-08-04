@@ -655,9 +655,4 @@ def main():
     )
     print(f"\n[demo] Done! {len(files)} frames written to {args.output}")
 
-
-if __name__ == "__main__":
-    main()
-
-
- 
+main()
