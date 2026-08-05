@@ -1,16 +1,23 @@
 """Router — the universal ETU entry point for any 2D animation.
 
-Strategy (best of both worlds, ~one vision call + one cheap text call):
+ARCHITECTURE (single-model):
+  Frames → CV analysis (deterministic, local) → FeatureGraph
+         → Reasoning model (DeepSeek, the sole LLM) →
+              ├─ template match → author correct template scene
+              └─ no match → general lift from FeatureGraph
 
-  1. EXTRACT a domain-agnostic FeatureGraph from the frames (general understanding).
-  2. UPGRADE: if the content confidently matches a known closed-set template
-     (judged from transcript + the extracted summary/labels), author that template
-     for a *correct, high-quality* lift.
-  3. FALLBACK: otherwise LIFT the FeatureGraph generically — works on anything,
-     honestly approximate on depth.
+The vision LLM (Gemini) is GONE. CV modules (optical flow, edge detection,
+contour finding, color segmentation) extract raw visual features from frames
+deterministically — free, fast, no API keys. The reasoning model interprets
+those features, labels objects, classifies the concept, and decides the
+output path. One model, many tools.
 
-So coverage is universal (everything gets at least the general lift) while known
-domains get the reliable, correct template.
+Strategy:
+  1. EXTRACT a FeatureGraph from frames via deterministic CV (no LLM).
+  2. UPGRADE: if the reasoning model confidently matches a known template,
+     author that template for a correct, high-quality lift.
+  3. FALLBACK: otherwise lift the FeatureGraph generically — works on
+     anything, honestly approximate on depth.
 """
 
 from __future__ import annotations
@@ -23,6 +30,7 @@ from mmi.etu import synthesize
 from mmi.etu.comprehend import comprehend
 from mmi.etu.comprehend.llm import LLMConfig
 from mmi.etu.understand import FeatureGraph, extract, lift
+from mmi.etu.understand.schema import FeatureGraph as FG
 from mmi.formats.mmi_scene import Scene
 
 
@@ -41,22 +49,49 @@ def comprehend_any(
     transcript_text: str = "",
     hint: str = "",
     brain_cfg: LLMConfig | None = None,
-    vision_cfg: LLMConfig | None = None,
     prefer: str = "auto",        # "auto" | "template" | "general"
     min_confidence: float = 0.55,
     chat_brain: Callable[[str, str], str] | None = None,
-    chat_eye: Callable[[str, str, list[str]], str] | None = None,
+    fps: int = 12,
+    max_cv_images: int = 8,
 ) -> RouterResult:
+    """Route a 2D animation to the best 3D lift — single reasoning model only.
+
+    NO vision LLM is used. FeatureGraph extraction is done by deterministic CV
+    (optical flow + contour finding + color clustering). Only the reasoning
+    model (DeepSeek) is called — for template classification and labeling.
+
+    Args:
+        frames: input frame paths (required for CV extraction)
+        transcript_text: optional narration/transcript
+        hint: optional context hint
+        brain_cfg: reasoning model config (defaults to DeepSeek)
+        prefer: "auto" | "template" | "general"
+        min_confidence: threshold for template match
+        chat_brain: reasoning model callable
+        fps: frames per second for FeatureGraph
+        max_cv_images: max frames for CV analysis
+    """
     fg: FeatureGraph | None = None
     if frames:
-        fg = extract(frames, cfg=vision_cfg, chat_fn=chat_eye, hint=hint)
+        # Deterministic CV extraction — NO vision LLM
+        fg = extract(frames, fps=fps, max_images=max_cv_images, hint=hint)
 
-    # 1+2) try the closed-set template upgrade (unless caller forces general)
+    # 1+2) try the closed-set template upgrade (reasoning model only)
     if prefer != "general":
         parts = [transcript_text, hint]
         if fg:
             parts.append(fg.summary)
-            parts += [o.label for o in fg.objects]
+            parts += [o.label for o in fg.objects if o.label]
+            # If CV found no labels, provide raw object info for the brain
+            if not any(o.label for o in fg.objects):
+                obj_desc = "; ".join(
+                    f"{o.id}: {o.shape} at ({o.timeline[0].x:.2f},{o.timeline[0].y:.2f}) "
+                    f"color={o.color}" if o.timeline else f"{o.id}: {o.shape} color={o.color}"
+                    for o in fg.objects[:6]
+                )
+                if obj_desc:
+                    parts.append(f"CV-detected objects: {obj_desc}")
         evidence = "\n".join(p for p in parts if p).strip()
         if evidence:
             c = comprehend(evidence, cfg=brain_cfg, chat_fn=chat_brain, min_confidence=min_confidence)
@@ -65,7 +100,7 @@ def comprehend_any(
             if prefer == "template":
                 return RouterResult(None, "none", c.concept, c.confidence, c.rationale, fg)
 
-    # 3) general fallback
+    # 3) general fallback — lift FeatureGraph directly
     if fg and not fg.validate():
         return RouterResult(lift(fg), "general", "general-lift", 1.0, "lifted FeatureGraph", fg)
 

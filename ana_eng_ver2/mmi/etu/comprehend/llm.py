@@ -1,9 +1,9 @@
 """Model-agnostic chat client (OpenAI-compatible HTTP, no third-party deps).
 
-Default provider is DeepSeek (cheap, text-only). The interface is deliberately
-provider-neutral: to use a *vision* model later (so the system can read frames
-directly instead of via transcript/OCR), add a provider here and pass image
-parts — nothing else in ETU changes.
+Default provider is DeepSeek (the sole reasoning model in ETU's single-model
+architecture). Vision capabilities handled by deterministic CV modules
+(mmi/etu/vision/) — no vision LLM needed. This module provides text-only
+chat for template classification and concept labeling.
 """
 
 from __future__ import annotations

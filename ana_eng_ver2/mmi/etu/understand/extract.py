@@ -1,71 +1,61 @@
-"""Vision extractor: 2D animation frames -> FeatureGraph (domain-agnostic).
+"""CV extractor: 2D animation frames -> FeatureGraph (domain-agnostic).
 
-This is the general "transfer the objects' main features and their changes"
-step. It asks a vision model to describe, for ANY animation, the objects on
-screen and how they move/scale/appear over time — with no domain assumptions.
-The result is the universal FeatureGraph the lifter turns into 3D/4D.
+This is the REPLACEMENT for the old vision-LLM-based extractor. Instead of
+sending frames to Gemini and asking it to describe objects, we run
+deterministic CV operations (optical flow, edge detection, contour finding,
+color segmentation) directly on the frames. The output is the same
+FeatureGraph structure — but produced locally, for free, with no API calls.
+
+The reasoning model (DeepSeek) then interprets this FeatureGraph, filling
+in semantic labels, summaries, and deciding template vs general lift.
+
+Architecture: frames → CV analysis → FeatureGraph → reasoning model → scene
+            (no vision LLM anywhere in this pipeline)
 """
 
 from __future__ import annotations
 
-import json
-from collections.abc import Callable
 from pathlib import Path
 
-from mmi.etu.comprehend.llm import LLMConfig, make_config, vision_chat
-from mmi.etu.understand.identity import reconcile
 from mmi.etu.understand.sampling import select_by_change
-from mmi.etu.understand.schema import SCHEMA_FOR_PROMPT, FeatureGraph
-
-_SYSTEM = f"""You analyze a 2D explainer/simulator animation and extract a \
-structured, domain-agnostic description of its objects and how they change over time.
-
-You are shown frames sampled in time order. Identify the distinct visual objects \
-(shapes, particles, parts, regions). For each, track its position, size and \
-appearance across the frames. Make NO domain assumptions and invent nothing not \
-visible — just report what is on screen and how it moves.
-
-Use normalized coordinates: x,y in [0,1] with (0,0) at the TOP-LEFT; size as a \
-fraction of frame width. Use one integer timepoint per sampled frame, starting at 0.
-
-Output STRICT JSON ONLY, matching this schema (no prose, no code fences):
-{SCHEMA_FOR_PROMPT}"""
-
-
-def _parse_json(text: str) -> dict:
-    """Tolerant JSON extraction (handles ```json fences / surrounding prose)."""
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.strip("`")
-        text = text[text.find("{"):]
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
-        i, j = text.find("{"), text.rfind("}")
-        if i != -1 and j != -1 and j > i:
-            return json.loads(text[i:j + 1])
-        raise
+from mmi.etu.understand.schema import FeatureGraph
 
 
 def extract(
     frames: list[Path],
-    cfg: LLMConfig | None = None,
-    chat_fn: Callable[[str, str, list[str]], str] | None = None,
-    hint: str = "",
+    fps: int = 12,
     max_images: int = 8,
+    hint: str = "",
 ) -> FeatureGraph:
+    """Extract a FeatureGraph from frames using deterministic CV only.
+
+    No vision LLM is called. The pipeline:
+      1. Change-driven sampling: pick the frames where things actually move
+      2. CV analysis: optical flow, edges, contours, colors on those frames
+      3. Object tracking: follow blobs across frames via spatial overlap
+      4. FeatureGraph: structured output ready for the reasoning model
+
+    The returned FeatureGraph has object IDs and raw features but NO
+    semantic labels — those are filled by the reasoning model in the router.
+    """
     if not frames:
-        return FeatureGraph()
-    # change-driven sampling: dense where the animation changes, sparse where it's
-    # still — so the model sees the moments that matter, not arbitrary cuts.
+        return FeatureGraph(fps=fps)
+
+    # Change-driven sampling: dense where animation moves, sparse where still
     picked = select_by_change(frames, max_images)
-    user = (f"Context hint: {hint}\n\n" if hint else "") + \
-        f"Here are {len(picked)} frames in time order (timepoints 0..{len(picked)-1}). Extract the FeatureGraph."
 
-    if chat_fn is None:
-        cfg = cfg or make_config("gemini")
-        chat_fn = lambda s, u, imgs: vision_chat(cfg, s, u, imgs)  # noqa: E731
+    # Lazy imports to avoid circular dependency (vision.extract → understand.schema)
+    from mmi.etu.vision.analysis import analyze as cv_analyze
+    from mmi.etu.vision.extract import feature_graph_from_analysis
 
-    raw = chat_fn(_SYSTEM, user, [str(p) for p in picked])
-    # stitch any frame-to-frame ID drift before the lifter sees it
-    return reconcile(FeatureGraph.from_dict(_parse_json(raw)))
+    # Deterministic CV analysis — no API keys, no network, no LLM
+    analysis = cv_analyze(picked)
+
+    # Build FeatureGraph from tracked objects
+    fg = feature_graph_from_analysis(analysis, fps=fps)
+
+    # If a hint was provided, store it for the reasoning model
+    if hint:
+        fg.summary = f"[hint: {hint}]"
+
+    return fg

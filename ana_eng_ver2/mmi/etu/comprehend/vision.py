@@ -1,15 +1,12 @@
-"""Vision "eye": describe sampled keyframes as text, for the DeepSeek "brain".
+"""DEPRECATED — Vision "eye" via Gemini LLM.
 
-This is the perception half of the hybrid comprehension path:
+This module is kept for backward compatibility but is NO LONGER the primary
+vision path. The single-model architecture uses deterministic CV modules
+(mmi/etu/vision/) instead — optical flow, edge detection, contour finding,
+color segmentation. Those modules are free, fast, and require no API keys.
 
-    frames --vision model--> factual visual description --+
-                                                          +--> DeepSeek closed-set classify
-    transcript / OCR / hint ------------------------------+
-
-The eye deliberately *only describes what is visible* (equations, axis labels,
-plot types, colors, what changes over time). It does NOT name the topic or pick a
-template — that decision stays with the closed-set classifier, preserving the
-low-risk design. The description simply becomes another piece of text evidence.
+This file remains so existing code that imports describe_frames doesn't break,
+but new code should use mmi.etu.vision.analyze() instead.
 """
 
 from __future__ import annotations

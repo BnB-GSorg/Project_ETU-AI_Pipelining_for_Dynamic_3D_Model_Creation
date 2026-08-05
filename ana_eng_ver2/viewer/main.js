@@ -386,7 +386,9 @@ function updateGitHud() {
 
 // ── end mmi-git ────────────────────────────────────────────────────────
 
-// Each builder returns { mesh, morph }. morph is null for static geometry, else\n// { frames:[{t,pos:Float32Array,col?:Float32Array}], hasColors }.\nfunction buildGeometry(geo) {
+// Each builder returns { mesh, morph }. morph is null for static geometry, else
+// { frames:[{t,pos:Float32Array,col?:Float32Array}], hasColors }.
+function buildGeometry(geo) {
   switch (geo.kind) {
     case "pointcloud": return makePointCloudMesh(geo);
     case "line": return makeLineMesh(geo);

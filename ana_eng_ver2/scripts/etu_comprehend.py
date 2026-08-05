@@ -1,28 +1,21 @@
 #!/usr/bin/env python3
-"""ETU E3 — comprehend a 2D explainer and author the 3D scene (hybrid).
+"""ETU comprehend — closed-set template classification from text evidence.
 
-Hybrid comprehension:
-    video -> keyframes --(vision "eye")--> visual description --+
-    transcript / OCR / hint -----------------------------------+--> DeepSeek
-                                                                     closed-set "brain"
-                                                                  -> LessonSpec -> 3D scene
+This is the reasoning-model-only path: classify a transcript/hint into a
+catalog concept (or abstain) and author the 3D scene. NO vision LLM is used
+here — visual understanding is handled by the CV modules in etu_understand.py.
 
-The vision eye only DESCRIBES frames; DeepSeek makes the closed-set decision.
-Run text-only (no vision key) or hybrid (add --vision-provider).
+The --vision-provider flag is DEPRECATED (the old Gemini eye path). Use
+scripts/etu_understand.py for the full CV-based pipeline instead.
 
 Examples:
-    # text-only (DeepSeek brain on a transcript)
+    # text-only (DeepSeek on a transcript)
     python scripts/etu_comprehend.py --transcript lecture.vtt --out data/samples/auto.json
-
-    # hybrid: extract frames from the mp4, describe them with a vision model, then classify
-    python scripts/etu_comprehend.py --video clip.mp4 --vision-provider gemini \\
-        --transcript lecture.vtt --out data/samples/auto.json
 
     # offline self-test (no keys / network)
     python scripts/etu_comprehend.py --self-test
 
-Keys (env): DEEPSEEK_API_KEY (brain). Vision eye: GEMINI_API_KEY / OPENAI_API_KEY /
-OPENROUTER_API_KEY depending on --vision-provider.
+Keys (env): DEEPSEEK_API_KEY for the reasoning model.
 """
 
 from __future__ import annotations
@@ -35,9 +28,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from mmi.etu import LessonSpec, synthesize  # noqa: E402
-from mmi.etu.comprehend import comprehend, describe_frames, gather  # noqa: E402
+from mmi.etu.comprehend import comprehend, gather  # noqa: E402
 from mmi.etu.comprehend.evidence import Evidence  # noqa: E402
 from mmi.etu.comprehend.llm import make_config  # noqa: E402
+from mmi.etu.comprehend.vision import describe_frames  # noqa: E402 — DEPRECATED, kept for --self-test compat
 
 
 def _extract_frames(video: Path, workdir: Path) -> list[Path]:

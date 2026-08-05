@@ -1,6 +1,6 @@
 # Project ETU — WIKI
 
-**Last Updated:** 2026-07-30
+**Last Updated:** 2026-08-04
 **Location:** ~/Documents/progproj/projute/ana_eng_ver2/
 
 ## 1. Architecture Overview
@@ -8,16 +8,27 @@
 ETU converts 2D process animations/videos into interactive 4D (3D + time) scenes
 viewable from any angle at any time point.
 
+**Single reasoning model + CV/3D tools — no separate vision LLM.**
+
+The architecture uses ONE reasoning model (DeepSeek) that orchestrates many
+tools: deterministic CV modules (optical flow, edge detection, contour finding,
+color segmentation) for visual feature extraction, 3D reconstruction modules
+(COLMAP, 3DGS) for geometric reconstruction, and template generators for
+known domains. No separate vision LLM — all visual understanding comes from
+CV tools feeding structured data to the reasoning model.
+
 **Two pipelines converge on one viewer:**
 
 ```
-                    ┌── Dimensional Lifting ───┐
-  Video / Text ──→  │   (understand + re-author)│──→ mmi-lite JSON ──┐
-                    └──────────────────────────┘                    │
-                                                                     ├──→ Three.js Viewer
-                    ┌── Reconstruction ────────┐                    │
-  Multi-view Video →│   (3DGS / COLMAP / NeRF) │──→ mmi-git .mmi ──┘
-                    └──────────────────────────┘
+                    ┌── Dimensional Lifting ───────────────────┐
+  Video / Text ──→  │  CV analysis → FeatureGraph → Reasoning  │──→ mmi-lite JSON ──┐
+                    │  model (DeepSeek) → template/general lift│                    │
+                    └──────────────────────────────────────────┘                    │
+                                                                                     ├──→ Three.js Viewer
+                    ┌── Reconstruction ────────────────────────┐                    │
+  Multi-view Video →│  (3DGS / COLMAP / NeRF) → Reasoning     │──→ mmi-git .mmi ──┘
+                    │  model → format encoder                  │
+                    └──────────────────────────────────────────┘
 ```
 
 ## 2. mmi-git Format Specification (v0.2)
@@ -128,7 +139,8 @@ handles motion identically for all types; only the viewer dispatch differs.
 | Layer | Technology |
 |---|---|
 | Format (Python) | dataclasses + numpy, JSON serialization |
-| Dimensional Lifting | DeepSeek (brain), Gemini 2.5 Flash (eyes) |
+| CV Analysis (vision) | OpenCV (optical flow, edge detection, contours, color clustering) — deterministic, no LLM |
+| Reasoning Model | DeepSeek (sole LLM — classifies, labels, decides template vs general) |
 | Reconstruction | COLMAP, gsplat (3DGS), OpenCV, numpy |
 | Tracking | Kabsch (SVD rigid alignment), k-means segmentation |
 | Viewer | Three.js r161, ES modules, no build step |
@@ -142,13 +154,12 @@ handles motion identically for all types; only the viewer dispatch differs.
 # Generate template scenes
 python scripts/etu_make.py --all
 
-# Universal engine (single video → 3D)
+# Universal engine (single video → 3D) — CV analysis extracts objects, reasoning model decides
 python scripts/etu_understand.py --video data/work/process.mp4 \
-    --vision-provider gemini --mode auto --out data/samples/output.json
+    --mode auto --out data/samples/output.json
 
-# Comprehension test
-python scripts/etu_comprehend.py --video data/work/fourier.mp4 \
-    --vision-provider gemini
+# Comprehension test (reasoning model only — classifies from transcript/hint)
+python scripts/etu_comprehend.py --video data/work/fourier.mp4
 
 # Start viewer
 python scripts/serve.py
@@ -181,8 +192,11 @@ ana_eng_ver2/
 │   │   └── mmi_git.py        # mmi-git format (GitGeometry, PartSpec, Commit,
 │   │                          #   MmiGitScene, compute_frame, keyframes)
 │   ├── etu/                   # Dimensional lifting engine
-│   │   ├── comprehend/       # Vision + LLM pipeline
-│   │   ├── understand/       # FeatureGraph extraction + 3D lifting
+│   │   ├── vision/            # CV analysis (deterministic, no LLM)
+│   │   │   ├── analysis.py    # Optical flow, edges, contours, colors
+│   │   │   └── extract.py     # FrameAnalysis → FeatureGraph
+│   │   ├── comprehend/        # Reasoning model classification (sole LLM)
+│   │   ├── understand/        # FeatureGraph extraction + 3D lifting
 │   │   ├── templates/        # 7 math templates
 │   │   └── router.py         # Template upgrade vs general fallback
 │   ├── stages/               # Reconstruction pipeline stages
@@ -238,6 +252,18 @@ keeping geometry crisp through the commit chain.
 The user's key insight: "just like linear matrix transformation, you apply
 one vector to the matrix and it changes." Spatial changes stored as matrix
 multiplications — elegant and mathematically clean.
+
+### 6.6 Single Reasoning Model, No Vision LLM (August 4)
+The original architecture used two LLMs: Gemini (vision) to describe frames,
+DeepSeek (reasoning) to classify. This was wasteful — the reconstruction
+pipeline already has CV/3D modules (optical flow, color segmentation, COLMAP,
+3DGS) that can extract visual features deterministically. The vision LLM was
+removed. Now a single reasoning model (DeepSeek) orchestrates CV/3D tools:
+frames → deterministic CV analysis → structured FeatureGraph → reasoning
+model interprets, labels objects, and decides template vs general lift.
+This makes every module a tool the reasoning model can call — one brain,
+many sensors. No API keys needed for vision, no network calls, no LLM tokens
+spent on describing pixels.
 
 ## 7. Future Directions
 
