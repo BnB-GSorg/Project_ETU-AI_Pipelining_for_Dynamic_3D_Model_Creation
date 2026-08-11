@@ -52,6 +52,7 @@ class Keyframe:
     opacity: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize this keyframe to a JSON-safe dict."""
         d: dict[str, Any] = {"t": self.t, "position": _round(self.position)}
         d["quaternion"] = _round(self.quaternion, 6)
         if self.scale is not None:
@@ -95,6 +96,7 @@ class PointCloudGeometry:
     kind: str = "pointcloud"
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize this point cloud geometry to a JSON-safe dict."""
         d: dict[str, Any] = {
             "kind": self.kind,
             "points": _round(self.points, 5),
@@ -124,6 +126,7 @@ class LineGeometry:
     kind: str = "line"
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize this line geometry to a JSON-safe dict."""
         d: dict[str, Any] = {"kind": self.kind, "color": self.color, "width": self.width}
         if self.points is not None:
             d["points"] = _round(self.points, 5)
@@ -152,6 +155,7 @@ class SurfaceGeometry:
     kind: str = "surface"
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize this surface geometry to a JSON-safe dict."""
         d: dict[str, Any] = {
             "kind": self.kind, "rows": self.rows, "cols": self.cols,
             "color": self.color, "opacity": self.opacity, "wireframe": self.wireframe,
@@ -182,6 +186,7 @@ class SceneObject:
     layer: str = "default"
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize this scene object to a JSON-safe dict."""
         return {
             "id": self.id,
             "layer": self.layer,
@@ -192,6 +197,8 @@ class SceneObject:
 
 @dataclass
 class Layer:
+    """A named, color-coded visibility group for scene objects."""
+
     id: str
     name: str
     color: str = "#888888"
@@ -219,6 +226,8 @@ class Annotation:
 
 @dataclass
 class Scene:
+    """Top-level container for an mmi-lite process visualization."""
+
     title: str
     fps: int
     duration_frames: int
@@ -231,6 +240,7 @@ class Scene:
     coordinate_system: str = "right-handed-y-up"
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize the full scene to a JSON-safe dict."""
         return {
             "format": FORMAT_NAME,
             "version": FORMAT_VERSION,

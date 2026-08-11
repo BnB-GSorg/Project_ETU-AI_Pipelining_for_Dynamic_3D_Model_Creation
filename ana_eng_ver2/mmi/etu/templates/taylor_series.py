@@ -42,6 +42,7 @@ def _curve(sx, y, z):
 
 
 def build(params: dict) -> Scene:
+    """Build a 3D Taylor series scene stacked by degree toward a target function."""
     func = params.get("func", "sin")
     T = int(params.get("terms", 6))
     spacing = float(params.get("spacing", 0.9))
@@ -54,6 +55,7 @@ def build(params: dict) -> Scene:
     target = np.asarray(target_fn(x), dtype=float)
     norm = max(float(np.abs(target).max()), 1e-9)
 
+    # Compute each series term and cumulative sum
     terms = [np.asarray(term_fn(x, k), dtype=float) for k in range(T)]
     cum = np.cumsum(terms, axis=0)
     hcolors = viridis_like(np.linspace(0, 1, T))
@@ -66,6 +68,7 @@ def build(params: dict) -> Scene:
             geometry=LineGeometry(color=c, width=2.0, points=_curve(sx, term / norm * yscale, -k * spacing)),
             track=[Keyframe(0, [0, 0, 0])], layer="terms"))
 
+    # Running approximation that morphs as more terms are added
     front_z = 1.4
     hold = max(1, nframes // 6)
     span = nframes - 1 - hold
@@ -77,6 +80,7 @@ def build(params: dict) -> Scene:
         geometry=LineGeometry(color="#ffffff", width=4.0, frames=sum_frames),
         track=[Keyframe(0, [0, 0, 0])], layer="approx"))
 
+    # Target function (the limit), front-most
     objects.append(SceneObject(
         id="target",
         geometry=LineGeometry(color="#ff6b6b", width=2.5, points=_curve(sx, target / norm * yscale, front_z + spacing)),

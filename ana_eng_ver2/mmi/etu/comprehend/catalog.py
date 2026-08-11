@@ -101,7 +101,6 @@ _consistency_check()
 
 
 def prompt_catalog() -> dict:
-    """Compact catalog for embedding in the LLM prompt."""
     return {
         c: {"when": d["when"],
             "params": {k: {kk: vv for kk, vv in v.items()} for k, v in d["params"].items()}}

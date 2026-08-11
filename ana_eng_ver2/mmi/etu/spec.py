@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class LessonSpec:
+    """The structured contract: a concept id + params that author a 3D scene."""
     concept: str                       # template id, e.g. "complex_surface"
     title: str
     params: dict = field(default_factory=dict)   # template-specific parameters
@@ -25,6 +26,7 @@ class LessonSpec:
     rationale: str | None = None        # *why* a 3rd dimension helps here (ETU intent)
 
     def to_dict(self) -> dict:
+        """Serialize the spec to a plain dict."""
         return {
             "concept": self.concept,
             "title": self.title,

@@ -19,6 +19,7 @@ from pathlib import Path
 
 @dataclass
 class LLMConfig:
+    """Configuration for an LLM provider endpoint (OpenAI-compatible)."""
     provider: str = "deepseek"
     model: str = "deepseek-chat"
     base_url: str = "https://api.deepseek.com"
@@ -43,6 +44,7 @@ PROVIDERS: dict[str, LLMConfig] = {
 
 
 def make_config(provider: str = "deepseek", model: str | None = None) -> LLMConfig:
+    """Create an LLMConfig for a known provider, optionally overriding the model."""
     if provider not in PROVIDERS:
         raise KeyError(f"unknown provider {provider!r}; known: {sorted(PROVIDERS)}")
     cfg = replace(PROVIDERS[provider])

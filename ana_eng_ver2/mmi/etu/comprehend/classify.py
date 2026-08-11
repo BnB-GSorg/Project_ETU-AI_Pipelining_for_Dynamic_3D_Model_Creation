@@ -37,6 +37,7 @@ Respond with STRICT JSON only, this exact shape:
 
 @dataclass
 class Comprehension:
+    """Result of closed-set classification: matched spec, confidence, and rationale."""
     spec: LessonSpec | None          # None => abstained
     concept: str                     # chosen concept or "none"
     confidence: float
@@ -56,6 +57,7 @@ def comprehend(
     min_confidence: float = 0.45,
     source_video: str | None = None,
 ) -> Comprehension:
+    """Classify text evidence against the closed-set catalog and return a Comprehension."""
     system, user = build_prompt(evidence_text)
     if chat_fn is None:
         cfg = cfg or make_config("deepseek")
@@ -71,11 +73,14 @@ def comprehend(
     confidence = float(raw.get("confidence", 0.0) or 0.0)
     rationale = str(raw.get("rationale", ""))
 
+    # Guard: concept must be in the catalog
     if concept not in catalog.CATALOG:
         return Comprehension(None, "none", confidence, rationale or "no matching concept", raw)
+    # Guard: confidence must meet the threshold
     if confidence < min_confidence:
         return Comprehension(None, concept, confidence, rationale or "below confidence threshold", raw)
 
+    # Validate and clamp params against the catalog schema
     params = catalog.validate_params(concept, raw.get("params", {}) or {})
     spec = LessonSpec(concept=concept, title="", params=params, source_video=source_video, rationale=rationale)
     return Comprehension(spec, concept, confidence, rationale, raw)

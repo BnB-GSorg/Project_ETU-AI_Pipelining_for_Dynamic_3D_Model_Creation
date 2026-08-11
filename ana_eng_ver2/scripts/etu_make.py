@@ -48,6 +48,7 @@ def make(concept: str, params: dict, out: Path) -> None:
 
 
 def main() -> int:
+    """Parse CLI args, build a scene from a template concept or regenerate all samples."""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("concept", nargs="?", choices=available(), help="template id")
     ap.add_argument("--param", action="append", default=[], metavar="K=V", help="template parameter")

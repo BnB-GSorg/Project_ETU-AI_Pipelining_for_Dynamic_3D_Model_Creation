@@ -23,12 +23,16 @@ from mmi.stages.segment import Segmentation
 
 @dataclass
 class PartTrack:
+    """Tracking data for a single part across time."""
+
     part_id: int
     keyframes: list[dict] = field(default_factory=list)  # {t, position[3], quaternion[4]}
 
 
 @dataclass
 class Tracking:
+    """Collection of per-part tracks produced by the tracking stage."""
+
     parts: list[PartTrack] = field(default_factory=list)
 
 
@@ -67,7 +71,6 @@ def _mat_to_quat(R: np.ndarray) -> np.ndarray:
 
 
 def _kabsch(P: np.ndarray, Q: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Best rigid transform mapping P onto Q. Returns (R, t)."""
     cp, cq = P.mean(0), Q.mean(0)
     H = (P - cp).T @ (Q - cq)
     U, _, Vt = np.linalg.svd(H)
@@ -77,6 +80,7 @@ def _kabsch(P: np.ndarray, Q: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def _rigid_track(recon: Reconstruction, seg: Segmentation) -> Tracking:
+    """Track parts across time using Kabsch rigid alignment per frame pair."""
     parts = sorted(seg.layer_names) or [0]
     tracking = Tracking(parts=[PartTrack(pid) for pid in parts])
     by_id = {pt.part_id: pt for pt in tracking.parts}

@@ -49,7 +49,6 @@ def _sorted(o: FeatureObject):
 
 
 def _seam_dist(a: FeatureObject, b: FeatureObject) -> float:
-    """Gap between the chronologically-adjacent endpoints; ∞ if they time-overlap."""
     (a0, a1), (b0, b1) = _span(a), _span(b)
     ax, bx = _sorted(a), _sorted(b)
     if a1 <= b0:
@@ -62,7 +61,6 @@ def _seam_dist(a: FeatureObject, b: FeatureObject) -> float:
 
 
 def _dup_overlap_dist(a: FeatureObject, b: FeatureObject) -> float:
-    """Mean position gap over shared timepoints; ∞ if they don't share any."""
     bm = {s.t: s for s in b.timeline}
     shared = [(s, bm[s.t]) for s in a.timeline if s.t in bm]
     if not shared:
@@ -77,6 +75,7 @@ def _same_object(a: FeatureObject, b: FeatureObject) -> bool:
 
 
 def reconcile(fg: FeatureGraph) -> FeatureGraph:
+    """Merge split/duplicate objects in a FeatureGraph via union-find clustering."""
     objs = [o for o in fg.objects if o.timeline]  # drop empty tracks
     n = len(objs)
 
@@ -94,6 +93,7 @@ def reconcile(fg: FeatureGraph) -> FeatureGraph:
             if find(i) != find(j) and _same_object(objs[i], objs[j]):
                 parent[find(i)] = find(j)
 
+    # Group objects by their union-find root
     groups: dict[int, list[FeatureObject]] = {}
     for i in range(n):
         groups.setdefault(find(i), []).append(objs[i])
@@ -103,6 +103,7 @@ def reconcile(fg: FeatureGraph) -> FeatureGraph:
         if len(members) == 1:
             merged.append(members[0])
             continue
+        # Merge multiple fragments: earliest fragment keeps id/label/color
         members.sort(key=lambda o: _span(o)[0])
         base = members[0]  # earliest fragment keeps id/label/color
         states = {}

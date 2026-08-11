@@ -54,6 +54,7 @@ class GitGeometry:
     line_width: float = 2.0           # line only
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize this geometry to a JSON-safe dict."""
         d: dict[str, Any] = {"kind": self.kind}
         if self.kind == "pointcloud":
             d["point_size"] = self.point_size
@@ -81,6 +82,7 @@ class GitGeometry:
 
     @staticmethod
     def from_dict(d: dict[str, Any]) -> "GitGeometry":
+        """Deserialize a GitGeometry from a JSON-safe dict."""
         kind = str(d["kind"])
         return GitGeometry(
             kind=kind,
@@ -120,12 +122,12 @@ class PartSpec:
 
     @property
     def geom_kind(self) -> str:
-        """Return the geometry kind, defaulting to 'pointcloud' for legacy parts."""
         if self.geometry is not None:
             return self.geometry.kind
         return "pointcloud"
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize this part spec to a JSON-safe dict."""
         d: dict[str, Any] = {
             "id": self.id,
             "label": self.label,
@@ -139,6 +141,7 @@ class PartSpec:
 
     @staticmethod
     def from_dict(d: dict[str, Any]) -> "PartSpec":
+        """Deserialize a PartSpec from a JSON-safe dict."""
         geom = GitGeometry.from_dict(d["geometry"]) if d.get("geometry") else None
         return PartSpec(
             str(d["id"]),
@@ -171,7 +174,6 @@ class Commit:
         return Commit(int(d["t"]), {str(k): [float(v) for v in vs] for k, vs in d["transforms"].items()})
 
     def matrix_for(self, part_id: str) -> np.ndarray | None:
-        """Return the 4×4 transform as a numpy array, or None if part not present."""
         flat = self.transforms.get(part_id)
         if flat is None:
             return None
@@ -246,6 +248,7 @@ class MmiGitScene:
     # ── Serialization ───────────────────────────────────────────────────
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize the full scene to a JSON-safe dict."""
         return {
             "format": FORMAT_NAME,
             "version": FORMAT_VERSION,
@@ -269,6 +272,7 @@ class MmiGitScene:
 
     @staticmethod
     def from_dict(d: dict[str, Any]) -> "MmiGitScene":
+        """Deserialize an MmiGitScene from a JSON-safe dict."""
         meta = d["meta"]
         base = d["base"]
         return MmiGitScene(

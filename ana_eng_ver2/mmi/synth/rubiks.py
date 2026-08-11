@@ -60,6 +60,7 @@ def quat_from_axis_angle(axis: np.ndarray, angle_rad: float) -> np.ndarray:
 
 
 def quat_mul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Multiply two quaternions [x,y,z,w] × [x,y,z,w]."""
     ax, ay, az, aw = a
     bx, by, bz, bw = b
     return np.array([
@@ -82,7 +83,10 @@ def quat_rotate_vec(q: np.ndarray, v: np.ndarray) -> np.ndarray:
 
 
 class _Cubie:
+    """A single 1×1×1 cubie in the Rubik's cube lattice."""
+
     def __init__(self, home: np.ndarray):
+        """Initialize cubie at its solved-state lattice position."""
         self.home = home.astype(float)        # solved-state lattice position
         self.pos = home.astype(float)         # current position (rotates over time)
         self.quat = np.array([0.0, 0, 0, 1])  # current orientation
@@ -93,6 +97,7 @@ class _Cubie:
         return {3: "corners", 2: "edges", 1: "centers", 0: "core"}[nonzero]
 
     def face_colors(self) -> dict[str, str]:
+        """Return face colors derived from the cubie's home position."""
         # Colors fixed in the cubie's *local* frame, derived from the home cell.
         x, y, z = np.round(self.home).astype(int)
         return {

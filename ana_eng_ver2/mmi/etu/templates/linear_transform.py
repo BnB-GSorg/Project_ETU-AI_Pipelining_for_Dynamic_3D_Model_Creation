@@ -39,12 +39,14 @@ _AXIS_COLORS = ["#ff5b5b", "#37c98a", "#5b8cff"]
 
 
 def build(params: dict) -> Scene:
+    """Build a 3D scene showing a linear transform matrix acting on space."""
     name = params.get("matrix", "shear")
     n = int(params.get("n", 5))
     nframes = int(params.get("frames", 70))
     M = _MATRICES.get(name, _MATRICES["shear"])
     det = float(np.linalg.det(M))
 
+    # Generate an n×n×n lattice of points in [-1,1]^3
     coords = np.linspace(-1, 1, n)
     pts = np.array([[x, y, z] for x in coords for y in coords for z in coords])
     S = 1.8

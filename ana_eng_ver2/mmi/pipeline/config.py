@@ -8,6 +8,8 @@ from pathlib import Path
 
 @dataclass
 class PipelineConfig:
+    """All configuration needed by the pipeline stages — IO paths, backend selection, and tuning params."""
+
     workdir: Path                     # scratch + artifacts root
     out_scene: Path                   # final mmi-lite .json
 
@@ -35,7 +37,6 @@ class PipelineConfig:
     extra: dict = field(default_factory=dict)
 
     def get_videos(self) -> list[Path]:
-        """Return all input videos, supporting single or multi-view config."""
         if self.videos:
             return [Path(v) for v in self.videos]
         if self.video:

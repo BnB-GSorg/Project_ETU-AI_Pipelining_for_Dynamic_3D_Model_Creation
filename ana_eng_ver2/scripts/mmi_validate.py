@@ -81,7 +81,7 @@ def _is_hex_color(v) -> bool:
 
 def _check_morph_frames(rep: Report, where: str, frames, key: str,
                         expect_len: int | None = None) -> None:
-    """`frames`: sparse keyframes that must share a constant vertex count."""
+    """Validate morph frames: non-empty list with constant vertex count across keyframes."""
     if not isinstance(frames, list) or not frames:
         rep.err(where, "`frames` must be a non-empty list")
         return
@@ -109,6 +109,7 @@ def _check_morph_frames(rep: Report, where: str, frames, key: str,
 
 
 def _check_geometry(rep: Report, where: str, geo) -> None:
+    """Validate a geometry object of known kind (box, pointcloud, line, surface)."""
     if not isinstance(geo, dict):
         rep.err(where, "geometry must be an object")
         return
@@ -171,6 +172,7 @@ def _check_geometry(rep: Report, where: str, geo) -> None:
 # ---- track / keyframes ---------------------------------------------------------
 
 def _check_track(rep: Report, where: str, track, duration: int) -> None:
+    """Validate a keyframe track: non-empty, ordered t-values, valid position/quaternion/scale."""
     if not isinstance(track, list) or not track:
         rep.err(where, "track must be a non-empty list of keyframes")
         return
@@ -202,6 +204,7 @@ def _check_track(rep: Report, where: str, track, duration: int) -> None:
 # ---- top level -----------------------------------------------------------------
 
 def validate(doc) -> Report:
+    """Validate a complete mmi-lite document against the format spec."""
     rep = Report()
     if not isinstance(doc, dict):
         rep.err("$", "top-level must be a JSON object")
@@ -297,6 +300,7 @@ def _iter_files(paths: list[str]) -> list[Path]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Parse CLI args, discover .json files, validate each, print report."""
     ap = argparse.ArgumentParser(description="Validate mmi-lite scene JSON (zero-dependency reference checker).")
     ap.add_argument("paths", nargs="+", help="scene .json files or directories")
     ap.add_argument("--quiet", action="store_true", help="only print files that fail")

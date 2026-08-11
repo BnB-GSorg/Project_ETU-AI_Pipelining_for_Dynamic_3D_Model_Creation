@@ -21,6 +21,7 @@ TAU = 2 * np.pi
 
 
 def _shape(name: str, U: np.ndarray, V: np.ndarray):
+    """Compute (x, y, z) coordinates for a parametric surface shape."""
     if name == "sphere":
         x = np.sin(V) * np.cos(U); y = np.cos(V); z = np.sin(V) * np.sin(U)
         return 2.2 * x, 2.2 * y, 2.2 * z
@@ -32,7 +33,7 @@ def _shape(name: str, U: np.ndarray, V: np.ndarray):
         y = V / 2 * np.sin(U / 2)
         z = (1 + V / 2 * np.cos(U / 2)) * np.sin(U)
         return 1.8 * x, 1.8 * y, 1.8 * z
-    # torus
+    # torus (default)
     R, r = 1.4, 0.55
     x = (R + r * np.cos(V)) * np.cos(U)
     y = r * np.sin(V)
@@ -47,6 +48,7 @@ _RANGES = {
 
 
 def build(params: dict) -> Scene:
+    """Build a 3D scene morphing a flat (u,v) parameter domain into a parametric surface."""
     shape = params.get("shape", "torus")
     n = int(params.get("n", 48))
     nframes = int(params.get("frames", 90))
@@ -64,6 +66,7 @@ def build(params: dict) -> Scene:
     surf = np.stack([X.flatten(), Y.flatten(), Z.flatten()], axis=-1)
     colors = viridis_like((V.flatten() - V.min()) / (np.ptp(V) + 1e-9)).flatten().tolist()
 
+    # Morph: flat plane -> 3D surface. Viewer interpolates for smooth rise.
     hold = max(1, nframes // 5)
     frames = [
         {"t": 0, "positions": flat.flatten().tolist(), "colors": colors},

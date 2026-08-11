@@ -21,6 +21,7 @@ from mmi.pipeline.config import PipelineConfig
 @dataclass
 class ViewFrames:
     """Frames extracted from one camera view."""
+
     frame_dir: Path
     frame_paths: list[Path]
     source_fps: float
@@ -30,6 +31,7 @@ class ViewFrames:
 @dataclass
 class IngestResult:
     """Output of multi-view ingest — one ViewFrames per camera."""
+
     views: dict[int, ViewFrames]  # camera_index → frames
 
     @property
@@ -38,7 +40,6 @@ class IngestResult:
 
     @property
     def frame_count(self) -> int:
-        """Total frames per view (all views are verified to match)."""
         return len(next(iter(self.views.values())).frame_paths)
 
     @property
@@ -81,7 +82,6 @@ def run(cfg: PipelineConfig) -> IngestResult:
 
 
 def _ingest_one(video: Path, out: Path, cfg: PipelineConfig) -> ViewFrames:
-    """Ingest a single video, trying OpenCV first, then ffmpeg."""
     out.mkdir(parents=True, exist_ok=True)
     try:
         return _ingest_opencv(video, out, cfg)
@@ -95,6 +95,7 @@ def _ingest_one(video: Path, out: Path, cfg: PipelineConfig) -> ViewFrames:
 
 
 def _ingest_opencv(video: Path, out: Path, cfg: PipelineConfig) -> ViewFrames:
+    """Extract frames using OpenCV VideoCapture — skip-frames based on target fps."""
     import cv2
 
     cap = cv2.VideoCapture(str(video))

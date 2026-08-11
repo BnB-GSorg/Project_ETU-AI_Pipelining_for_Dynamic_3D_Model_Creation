@@ -17,7 +17,6 @@ from mmi.etu.understand.identity import reconcile
 
 
 def _overlap(a: DetectedObject, b: DetectedObject) -> float:
-    """IoU-like overlap between two detected objects (normalized coords)."""
     x_min = max(a.x - a.w / 2, b.x - b.w / 2)
     x_max = min(a.x + a.w / 2, b.x + b.w / 2)
     y_min = max(a.y - a.h / 2, b.y - b.h / 2)
@@ -46,7 +45,7 @@ def feature_graph_from_analysis(
     if analysis.n_frames == 0:
         return FeatureGraph(fps=fps)
     
-    # Track objects across frames
+    # Track objects across frames via spatial overlap matching
     tracked: list[list[dict]] = []  # tracked[i] = list of {id, obj} for frame i
     next_id = 0
     active_ids: dict[int, str] = {}  # track_id -> label prefix
@@ -59,6 +58,7 @@ def feature_graph_from_analysis(
             best_overlap = 0.0
             best_id = None
             
+            # Match against previous frame's objects by overlap
             if fi > 0:
                 for prev in tracked[fi - 1]:
                     ov = _overlap(obj, prev["obj"])
@@ -92,7 +92,7 @@ def feature_graph_from_analysis(
                 obj_states[tid] = []
                 obj_shape[tid] = do.shape
                 obj_color[tid] = do.color
-                # Depth from size: bigger objects assumed closer
+                # Depth heuristic: bigger objects assumed closer
                 obj_depth[tid] = max(0.0, min(1.0, 1.0 - do.w * do.h * 3))
             obj_states[tid].append({
                 "t": fi, "x": do.x, "y": do.y,
@@ -100,7 +100,7 @@ def feature_graph_from_analysis(
                 "opacity": 1.0,
             })
     
-    # Sort by first appearance
+    # Sort by first appearance for deterministic ordering
     sorted_ids = sorted(obj_states.keys(), key=lambda tid: obj_states[tid][0]["t"])
     
     objects = []

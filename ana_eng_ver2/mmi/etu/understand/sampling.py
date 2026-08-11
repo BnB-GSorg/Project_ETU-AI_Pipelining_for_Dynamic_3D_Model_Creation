@@ -53,7 +53,6 @@ def _gray(path: Path, size: int = 96) -> np.ndarray:
 
 
 def change_signal(frames: list[Path]) -> np.ndarray:
-    """Mean absolute frame-to-frame difference on small grayscale thumbnails."""
     grays = [_gray(p) for p in frames]
     sig = np.zeros(len(frames), dtype=np.float32)
     for i in range(1, len(frames)):
@@ -62,7 +61,6 @@ def change_signal(frames: list[Path]) -> np.ndarray:
 
 
 def select_by_change(frames: list[Path], k: int) -> list[Path]:
-    """Pick up to k frames, weighted toward where the animation changes fast."""
     if len(frames) <= k:
         return frames
     idxs = pick_indices(change_signal(frames), k)

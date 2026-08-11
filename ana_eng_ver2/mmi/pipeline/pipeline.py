@@ -17,6 +17,7 @@ from mmi.stages import assemble, ingest, keyframes, reconstruct, segment, track
 
 
 def run(cfg: PipelineConfig, verbose: bool = True) -> Scene:
+    """Run the full 6-stage pipeline: ingest → keyframes → reconstruct → segment → track → assemble."""
     def log(msg: str) -> None:
         if verbose:
             print(f"[{time.strftime('%H:%M:%S')}] {msg}")

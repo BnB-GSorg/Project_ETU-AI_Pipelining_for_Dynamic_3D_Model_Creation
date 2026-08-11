@@ -28,7 +28,6 @@ _FIELDS = {
 
 
 def _arrow_points(base: np.ndarray, vec: np.ndarray) -> list[float]:
-    """A connected polyline that draws an arrow: base -> tip -> headL -> tip -> headR."""
     tip = base + vec
     n = np.linalg.norm(vec)
     if n < 1e-6:
@@ -45,12 +44,14 @@ def _arrow_points(base: np.ndarray, vec: np.ndarray) -> list[float]:
 
 
 def build(params: dict) -> Scene:
+    """Build a 3D vector field scene with arrows colored by magnitude."""
     field = params.get("field", "rotation")
     density = int(params.get("density", 5))
     scale = float(params.get("scale", 0.45))
     extent = float(params.get("extent", 2.0))
     F = _FIELDS.get(field, _FIELDS["rotation"])
 
+    # Sample the field on a regular 3D grid within [-extent, extent]
     coords = np.linspace(-extent, extent, density)
     samples = [(x, y, z) for x in coords for y in coords for z in coords]
     vecs = [F(x, y, z) for (x, y, z) in samples]

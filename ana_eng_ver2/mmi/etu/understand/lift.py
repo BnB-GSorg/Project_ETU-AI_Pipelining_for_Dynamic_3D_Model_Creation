@@ -64,7 +64,6 @@ def _hex_to_rgb01(c: str) -> list[float]:
 
 
 def _primitive(obj: FeatureObject):
-    """Build a unit-size primitive for the object; track scale will size it."""
     shape = obj.shape
     if shape in ("sphere", "blob", "disc", "ring"):
         pts, n = _sphere_points()
@@ -136,6 +135,7 @@ def _trajectory(obj: FeatureObject) -> list[float] | None:
 
 
 def lift(fg: FeatureGraph, title: str | None = None) -> Scene:
+    """Lift a FeatureGraph into an mmi-lite Scene with object tracks and trails."""
     n_ordinal = max(2, fg.duration)
     # Spread the event timepoints onto a finer timeline so the viewer interpolates
     # the in-between frames (smooth motion) instead of every frame being a keyframe.
@@ -144,8 +144,10 @@ def lift(fg: FeatureGraph, title: str | None = None) -> Scene:
     layers = [Layer("objects", "Objects", "#8ab4ff"), Layer("trails", "Trajectory trails", "#5b6677")]
 
     for obj in fg.objects:
+        # Main object with its animated track
         objects.append(SceneObject(
             id=obj.id, geometry=_primitive(obj), track=_track(obj, n_ordinal, duration, _SUBDIV), layer="objects"))
+        # Trajectory trail showing the object's full path
         traj = _trajectory(obj)
         if traj is not None:
             objects.append(SceneObject(

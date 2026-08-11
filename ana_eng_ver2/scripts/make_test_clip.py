@@ -24,6 +24,7 @@ import numpy as np
 
 
 def render(out: Path, n_frames: int = 72, fps: int = 24) -> Path:
+    """Render an orbit animation (sun + two planets + comet) to an .mp4 file."""
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix="orbit_"))
     for i in range(n_frames):

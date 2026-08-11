@@ -29,6 +29,8 @@ from mmi.stages.keyframes import KeyframeResult
 
 @dataclass
 class TimeSlice:
+    """A single frame's point cloud in world-space coordinates."""
+
     t: int
     points: np.ndarray           # (N,3) world-space points
     colors: np.ndarray | None = None  # (N,3) in 0..1
@@ -36,11 +38,14 @@ class TimeSlice:
 
 @dataclass
 class Reconstruction:
+    """A sequence of per-frame point clouds produced by a reconstruction backend."""
+
     slices: list[TimeSlice] = field(default_factory=list)
     backend: str = "synthetic"
 
 
 def run(cfg: PipelineConfig, keyframes: KeyframeResult) -> Reconstruction:
+    """Dispatch to the configured reconstruction backend."""
     backend = cfg.recon_backend
     if backend == "colmap":
         return _run_colmap(cfg, keyframes)
@@ -55,7 +60,6 @@ def run(cfg: PipelineConfig, keyframes: KeyframeResult) -> Reconstruction:
 # ── COLMAP backend ──────────────────────────────────────────────────────
 
 def _require_colmap():
-    """Verify COLMAP is installed and on PATH."""
     if shutil.which("colmap") is None:
         raise RuntimeError(
             "COLMAP is not installed or not on PATH.\n"
@@ -202,7 +206,6 @@ def _read_colmap_points3d(path: Path) -> tuple[np.ndarray, np.ndarray | None]:
 # ── 3D Gaussian Splatting backend ───────────────────────────────────────
 
 def _check_gpu() -> bool:
-    """Check if a CUDA GPU is available."""
     try:
         import torch
         return torch.cuda.is_available()
@@ -285,7 +288,6 @@ def _run_gsplat(cfg: PipelineConfig, keyframes: KeyframeResult) -> Reconstructio
 
 
 def _run_colmap_sparse(img_dir: Path, db_path: Path, sparse_dir: Path):
-    """Run COLMAP sparse reconstruction only (for 3DGS initialization)."""
     subprocess.run([
         "colmap", "feature_extractor",
         "--database_path", str(db_path), "--image_path", str(img_dir),
@@ -332,7 +334,7 @@ def _export_gsplat_pointcloud(checkpoint_dir: Path) -> tuple[np.ndarray, np.ndar
 
     # Filter by opacity
     if opacities is not None:
-        opacity = opacities.detach().cpu().numpy() if hasattr(opacities, "detach") else np.array(opacities)
+        opacity = opacities.detach().cpu().numpy() if hasattr(opacities, "detach") else np.array(opacity)
         opacity = opacity.squeeze()
         mask = opacity > 0.1
         means = means[mask]
@@ -379,7 +381,6 @@ def _run_dyn_nerf(cfg: PipelineConfig, keyframes: KeyframeResult) -> Reconstruct
 # ── Helpers ─────────────────────────────────────────────────────────────
 
 def _resolve_view_dirs(cfg: PipelineConfig, n_views: int) -> dict[int, Path]:
-    """Find the frame directories for each view."""
     dirs = {}
     for vi in range(n_views):
         d = cfg.workdir / f"01_frames/view_{vi:02d}"
@@ -392,7 +393,6 @@ def _resolve_view_dirs(cfg: PipelineConfig, n_views: int) -> dict[int, Path]:
 # ── Synthetic (fallback) ────────────────────────────────────────────────
 
 def _run_synthetic(cfg: PipelineConfig, keyframes: KeyframeResult) -> Reconstruction:
-    """Placeholder point cloud for exercising the pipeline without real data."""
     rng = np.random.default_rng(0)
     base = rng.uniform(-1.2, 1.2, size=(1500, 3))
     base = base[np.abs(base).max(axis=1) > 0.4]  # hollow shell

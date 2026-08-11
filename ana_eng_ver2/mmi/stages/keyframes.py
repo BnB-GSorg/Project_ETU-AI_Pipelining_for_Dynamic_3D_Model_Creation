@@ -18,6 +18,8 @@ from mmi.stages.ingest import IngestResult
 
 @dataclass
 class KeyframeResult:
+    """Selected keyframe paths and their frame indices."""
+
     keyframe_paths: list[Path]
     indices: list[int]
 

@@ -32,6 +32,7 @@ def run(
     tracking: Tracking,
     fps: int = 4,
 ) -> Scene:
+    """Assemble reconstruction + segmentation + tracking into an mmi-lite Scene."""
     if not recon.slices:
         raise ValueError("empty reconstruction — nothing to assemble")
 

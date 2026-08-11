@@ -49,6 +49,7 @@ def _extract_frames(video: Path, workdir: Path, target_fps: float = 10.0) -> lis
 
 
 def _self_test() -> int:
+    """Run offline self-tests for general lift, router, CV vision, identity, and sampling."""
     ok = True
 
     # a) GENERAL lift: a generic animation the engine has no template for
@@ -155,6 +156,7 @@ def _self_test() -> int:
 
 
 def main() -> int:
+    """Parse CLI args, extract frames, run CV+reasoning pipeline, output 3D scene."""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--video", type=Path)
     ap.add_argument("--frames", type=Path)
@@ -174,6 +176,7 @@ def main() -> int:
     if args.self_test:
         return _self_test()
 
+    # Resolve frame sources
     frames: list[Path] = []
     if args.video:
         print(f"extracting frames from {args.video} ...")

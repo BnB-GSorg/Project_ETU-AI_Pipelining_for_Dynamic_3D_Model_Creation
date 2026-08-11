@@ -18,6 +18,7 @@ from mmi.synth.rubiks import build_scene  # noqa: E402
 
 
 def main() -> int:
+    """Parse CLI args, build a Rubik's-cube scene, validate, and save."""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", default="data/samples/rubiks.json", type=Path)
     ap.add_argument("--moves", default=None, help="space-separated move list, e.g. \"R U R' U'\"")

@@ -72,8 +72,7 @@ def motion_regions(flow: np.ndarray, threshold: float = 0.5) -> list[MotionRegio
     h, w = flow.shape
     binary = (flow > threshold).astype(np.uint8)
     
-    # Simple connected-components without cv2 dependency for labeling
-    # Use findContours via cv2
+    # Use findContours via cv2; fall back to grid-based if unavailable
     try:
         import cv2
         contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -131,6 +130,7 @@ def _bbox(cnt: np.ndarray) -> tuple[int, int, int, int]:
 
 @dataclass
 class MotionRegion:
+    """A contiguous region of detected motion in a frame transition."""
     x: float          # centroid x (0..1, normalized)
     y: float          # centroid y (0..1, normalized)
     w: float          # width (0..1)
@@ -152,10 +152,10 @@ def dominant_colors(frame: Path, k: int = 5, size: int = 64) -> list[ColorCluste
     # Simple k-means (no sklearn dependency)
     centroids = img[np.random.choice(len(img), min(k, len(img)), replace=False)].astype(np.float32)
     for _ in range(10):
-        # Assign
+        # Assign each pixel to nearest centroid
         dists = np.sum((img[:, None, :] - centroids[None, :, :]) ** 2, axis=2)
         labels = np.argmin(dists, axis=1)
-        # Update
+        # Update centroids to cluster means
         new_centroids = np.array([img[labels == i].mean(axis=0) if np.any(labels == i) else centroids[i] for i in range(k)], dtype=np.float32)
         if np.allclose(centroids, new_centroids, atol=0.5):
             break
@@ -176,6 +176,7 @@ def dominant_colors(frame: Path, k: int = 5, size: int = 64) -> list[ColorCluste
 
 @dataclass
 class ColorCluster:
+    """A dominant color cluster found via k-means segmentation."""
     hex: str         # #rrggbb
     fraction: float  # 0..1, portion of image this color covers
 
@@ -197,7 +198,6 @@ def edge_map(frame: Path, size: int = 128, low: float = 50, high: float = 150) -
 
 
 def edge_density(edges: np.ndarray) -> float:
-    """Fraction of edge pixels — simple complexity measure."""
     return float(np.count_nonzero(edges)) / edges.size
 
 
@@ -238,7 +238,7 @@ def find_objects(frame: Path, size: int = 128,
         cx = (M["m10"] / M["m00"]) / w if M["m00"] > 0 else (x + bw/2) / w
         cy = (M["m01"] / M["m00"]) / h if M["m00"] > 0 else (y + bh/2) / h
         
-        # Shape classification
+        # Shape classification via circularity and vertex count
         peri = cv2.arcLength(cnt, True)
         approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
         circularity = 4 * math.pi * area / (peri * peri) if peri > 0 else 0
@@ -252,7 +252,7 @@ def find_objects(frame: Path, size: int = 128,
         else:
             shape = "blob"
         
-        # Get dominant color for this object
+        # Get dominant color for this object from the masked region
         mask = np.zeros((h, w), dtype=np.uint8)
         cv2.drawContours(mask, [cnt], -1, 255, -1)
         rgb = _rgb(frame, size)
@@ -273,6 +273,7 @@ def find_objects(frame: Path, size: int = 128,
 
 @dataclass
 class DetectedObject:
+    """A single object detected via contour finding in one frame."""
     x: float      # centroid x (0..1, normalized)
     y: float      # centroid y (0..1, normalized)
     w: float      # width (0..1)
@@ -308,7 +309,7 @@ def analyze(frames: list[Path], size: int = 128) -> FrameAnalysis:
     if not frames:
         return FrameAnalysis(n_frames=0, size=(size, size))
     
-    # Motion
+    # Motion: optical flow + region extraction per transition
     motion = optical_flow(frames, size)
     mr_per_transition = [motion_regions(m) for m in motion] if motion.size > 0 else []
 

@@ -27,6 +27,7 @@ def _curve(sx: np.ndarray, y: np.ndarray, z: float) -> list[float]:
 
 
 def build(params: dict) -> Scene:
+    """Build a 3D Fourier stack scene from harmonic decomposition of a square wave."""
     K = int(params.get("harmonics", 8))
     m = int(params.get("samples", 220))
     spacing = float(params.get("spacing", 0.9))
@@ -37,6 +38,7 @@ def build(params: dict) -> Scene:
     sx = (x - 0.5) * 6.0                              # scene x in [-3, 3]
     two_pi = 2 * np.pi
 
+    # Each odd harmonic term: (4/π) * (1/(2k-1)) * sin(2π(2k-1)x)
     terms = [(4 / np.pi) * (1 / (2 * k - 1)) * np.sin(two_pi * (2 * k - 1) * x) for k in range(1, K + 1)]
     hcolors = viridis_like(np.linspace(0, 1, K))
 

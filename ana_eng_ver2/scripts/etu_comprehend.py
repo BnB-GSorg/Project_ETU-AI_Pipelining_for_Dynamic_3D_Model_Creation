@@ -35,7 +35,6 @@ from mmi.etu.comprehend.vision import describe_frames  # noqa: E402 — DEPRECAT
 
 
 def _extract_frames(video: Path, workdir: Path) -> list[Path]:
-    """Reuse the ingest + keyframe stages to get keyframes from an mp4."""
     from mmi.pipeline.config import PipelineConfig
     from mmi.stages import ingest, keyframes
 
@@ -80,6 +79,7 @@ def _self_test() -> int:
 
 
 def main() -> int:
+    """Parse CLI args, gather evidence, classify with reasoning model, synthesize scene."""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--video", type=Path, help="mp4 to extract keyframes from (for vision/OCR)")
     ap.add_argument("--frames", type=Path, help="existing dir of keyframe PNGs")

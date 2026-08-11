@@ -14,6 +14,7 @@ from mmi.formats.mmi_scene import Scene
 
 
 def synthesize(spec: LessonSpec) -> Scene:
+    """Dispatch a LessonSpec to its registered template and return a validated Scene."""
     if spec.concept not in REGISTRY:
         raise KeyError(f"unknown concept {spec.concept!r}; available: {available()}")
     scene = REGISTRY[spec.concept](spec.params)

@@ -19,6 +19,8 @@ from mmi.stages.reconstruct import Reconstruction
 
 @dataclass
 class Segmentation:
+    """Per-frame point labels and their human-readable layer names."""
+
     labels: list[np.ndarray] = field(default_factory=list)  # one (N,) array per TimeSlice
     layer_names: dict[int, str] = field(default_factory=dict)
 

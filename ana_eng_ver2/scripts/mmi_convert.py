@@ -20,7 +20,6 @@ from mmi.formats.mmi_scene import Scene as LiteScene, PointCloudGeometry
 
 
 def _quat_multiply(q1: list[float], q2: list[float]) -> list[float]:
-    """Multiply two quaternions [x,y,z,w]."""
     x1, y1, z1, w1 = q1
     x2, y2, z2, w2 = q2
     return [
@@ -32,12 +31,10 @@ def _quat_multiply(q1: list[float], q2: list[float]) -> list[float]:
 
 
 def _quat_inverse(q: list[float]) -> list[float]:
-    """Inverse of a unit quaternion [x,y,z,w]."""
     return [-q[0], -q[1], -q[2], q[3]]
 
 
 def _quat_to_matrix(q: list[float]) -> list[float]:
-    """Convert quaternion [x,y,z,w] to 4x4 rotation matrix (row-major, translation=0)."""
     x, y, z, w = q
     return [
         1-2*y*y-2*z*z, 2*x*y-2*z*w,   2*x*z+2*y*w,   0.0,
@@ -48,7 +45,6 @@ def _quat_to_matrix(q: list[float]) -> list[float]:
 
 
 def _build_transform(position: list[float], quaternion: list[float]) -> list[float]:
-    """Build a 4x4 homogeneous transform from position and quaternion (row-major)."""
     R = np.array(_quat_to_matrix(quaternion), dtype=np.float64).reshape(4, 4)
     T = np.eye(4, dtype=np.float64)
     T[0, 3] = position[0]
@@ -222,6 +218,7 @@ def lite_to_git(lite_dict: dict) -> MmiGitScene:
 
 
 def main() -> int:
+    """Parse CLI args, convert mmi-lite JSON to .mmi, validate and save."""
     ap = argparse.ArgumentParser(description="Convert mmi-lite ↔ mmi-git")
     ap.add_argument("input", type=Path, help="mmi-lite .json file")
     ap.add_argument("--out", type=Path, required=True, help="output .mmi file")

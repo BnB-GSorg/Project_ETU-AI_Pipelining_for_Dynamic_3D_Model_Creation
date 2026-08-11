@@ -28,6 +28,7 @@ _FUNCS = {
 
 
 def build(params: dict) -> Scene:
+    """Build a 3D scene lifting a 2D heatmap of z=f(x,y) into a surface."""
     func = params.get("func", "ripple")
     extent = float(params.get("extent", 3.0))
     n = int(params.get("n", 36))

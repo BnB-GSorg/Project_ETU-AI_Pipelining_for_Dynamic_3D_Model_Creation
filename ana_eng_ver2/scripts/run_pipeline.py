@@ -20,6 +20,7 @@ from mmi.pipeline.pipeline import run  # noqa: E402
 
 
 def main() -> int:
+    """Parse CLI args, build a PipelineConfig, and execute the full pipeline."""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("video", type=Path)
     ap.add_argument("--workdir", type=Path, default=Path("data/work"))

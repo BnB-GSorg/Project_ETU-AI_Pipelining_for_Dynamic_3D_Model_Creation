@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> None:
+    """Start an HTTP server serving the repo root and open the viewer in a browser."""
     handler = lambda *a, **k: http.server.SimpleHTTPRequestHandler(*a, directory=str(ROOT), **k)
     with socketserver.TCPServer(("", PORT), handler) as httpd:
         url = f"http://localhost:{PORT}/viewer/"

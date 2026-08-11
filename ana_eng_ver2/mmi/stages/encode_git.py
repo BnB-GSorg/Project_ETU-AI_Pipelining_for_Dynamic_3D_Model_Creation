@@ -39,7 +39,6 @@ def _quat_inverse(q: list[float]) -> list[float]:
 
 
 def _quat_to_matrix(q: list[float]) -> np.ndarray:
-    """Quaternion [x,y,z,w] → 4×4 rotation matrix."""
     x, y, z, w = q
     return np.array([
         [1-2*y*y-2*z*z, 2*x*y-2*z*w,   2*x*z+2*y*w,   0],
@@ -50,7 +49,6 @@ def _quat_to_matrix(q: list[float]) -> np.ndarray:
 
 
 def _build_abs_matrix(position: list[float], quaternion: list[float]) -> np.ndarray:
-    """Build absolute 4×4 homogeneous transform from position + quaternion."""
     R = _quat_to_matrix(quaternion)
     T = np.eye(4, dtype=np.float64)
     T[0, 3] = position[0]
@@ -63,7 +61,6 @@ def _relative_matrix(
     prev_pos: list[float], prev_quat: list[float],
     curr_pos: list[float], curr_quat: list[float],
 ) -> list[float]:
-    """Compute relative 4×4 transform: inv(prev) * curr → flat list of 16."""
     M_prev = _build_abs_matrix(prev_pos, prev_quat)
     M_curr = _build_abs_matrix(curr_pos, curr_quat)
     M_rel = np.linalg.inv(M_prev) @ M_curr

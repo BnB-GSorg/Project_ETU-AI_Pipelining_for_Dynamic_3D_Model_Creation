@@ -17,12 +17,14 @@ from pathlib import Path
 
 @dataclass
 class Evidence:
+    """Collected text evidence for classification: transcript, OCR, hint, vision."""
     transcript: str = ""
     ocr: str = ""
     hint: str = ""
     vision: str = ""        # description produced by the vision "eye" (hybrid path)
 
     def as_text(self) -> str:
+        """Format all evidence fields into a single string for the classifier prompt."""
         parts = []
         if self.hint:
             parts.append(f"[HINT]\n{self.hint}")
@@ -36,7 +38,6 @@ class Evidence:
 
 
 def _parse_captions(text: str) -> str:
-    """Strip srt/vtt indices, timestamps and tags into plain narration."""
     out: list[str] = []
     for line in text.splitlines():
         s = line.strip()
@@ -51,6 +52,7 @@ def _parse_captions(text: str) -> str:
 
 
 def gather(transcript: Path | None = None, frames_dir: Path | None = None, hint: str = "") -> Evidence:
+    """Collect text evidence from a transcript file, frame OCR, and manual hint."""
     ev = Evidence(hint=hint.strip())
     if transcript and transcript.exists():
         raw = transcript.read_text(encoding="utf-8", errors="ignore")
@@ -76,6 +78,7 @@ def _ocr_frames(frames_dir: Path, max_frames: int = 12) -> str:
                 texts.append(t)
         except Exception:
             continue
+    # Deduplicate lines across frames
     seen, uniq = set(), []
     for line in " ".join(texts).split("\n"):
         line = line.strip()

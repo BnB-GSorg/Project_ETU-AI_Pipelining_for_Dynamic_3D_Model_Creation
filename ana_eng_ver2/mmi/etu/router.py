@@ -36,6 +36,7 @@ from mmi.formats.mmi_scene import Scene
 
 @dataclass
 class RouterResult:
+    """Result of routing a 2D animation through the ETU pipeline."""
     scene: Scene | None
     method: str                 # "template" | "general" | "none"
     concept: str

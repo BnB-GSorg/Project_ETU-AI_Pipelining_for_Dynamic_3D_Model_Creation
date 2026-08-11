@@ -23,6 +23,7 @@ SHAPES = ["sphere", "box", "disc", "arrow", "tube", "blob", "ring", "plane"]
 
 @dataclass
 class State:
+    """A single timepoint snapshot of an object's position and appearance."""
     t: int                       # timepoint index (0..duration-1)
     x: float                     # normalized image x (0..1)
     y: float                     # normalized image y (0..1, top-left origin)
@@ -33,6 +34,7 @@ class State:
 
 @dataclass
 class FeatureObject:
+    """A tracked object with identity, visual features, and a movement timeline."""
     id: str
     label: str                   # what it is, in plain words ("red ball", "electron")
     shape: str = "blob"          # one of SHAPES
@@ -43,6 +45,7 @@ class FeatureObject:
 
 @dataclass
 class FeatureGraph:
+    """A structured description of a 2D animation as objects and their changes."""
     summary: str = ""            # one line: what mechanism the video shows
     fps: int = 12
     duration: int = 1            # number of timepoints
@@ -52,6 +55,7 @@ class FeatureGraph:
     # ------- (de)serialization for the vision model + debugging -------
     @staticmethod
     def from_dict(d: dict[str, Any]) -> "FeatureGraph":
+        """Deserialize a FeatureGraph from a dict (vision model output or JSON)."""
         objs = []
         for o in d.get("objects", []):
             tl = [State(
@@ -69,6 +73,7 @@ class FeatureGraph:
                             duration=dur, objects=objs, relations=list(d.get("relations", [])))
 
     def validate(self) -> list[str]:
+        """Check the graph for structural problems; returns list of issue strings."""
         problems = []
         if not self.objects:
             problems.append("no objects extracted")

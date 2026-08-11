@@ -30,6 +30,7 @@ _FUNCS = {
 
 
 def build(params: dict) -> Scene:
+    """Build a 3D scene lifting a complex function's domain coloring into a modulus landscape."""
     func = params.get("func", "z^3-1")
     extent = float(params.get("extent", 1.6))
     n = int(params.get("n", 44))
@@ -56,6 +57,7 @@ def build(params: dict) -> Scene:
     def positions(zscale: float) -> list[float]:
         return np.stack([sx, Z.flatten() * zscale, sz], axis=-1).flatten().tolist()
 
+    # Morph: flat colored disk -> 3D landscape. Viewer interpolates -> smooth rise.
     hold = max(1, nframes // 5)
     cflat = colors.flatten().tolist()
     frames = [

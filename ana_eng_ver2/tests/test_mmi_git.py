@@ -270,6 +270,7 @@ def test_validate_bad_geometry_kind():
 
 
 if __name__ == "__main__":
+    # Manual test runner — iterate through all test functions and report results
     tests = [
         test_frame_0_no_commits,
         test_single_translation,
