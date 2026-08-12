@@ -185,9 +185,9 @@ ETU_LOG_LEVEL=INFO
 | C++23 features fail to compile | Compiler too old — see minimum versions above |
 | `pip install -e .` fails | Ensure Python 3.10+ and venv is activated |
 | Renderer not detected | See [Compile-Guide](Compile-Guide.md) § Renderer Detection |
-| GPU not detected | See `demo/.agents/skills/debug` or `src/AGENTS.md` § GPU |
+| GPU not detected | See `Python/.agents/skills/debug` or `src/AGENTS.md` § GPU |
 
-For deeper issues, use the debugging skills in `demo/.agents/skills/debug/SKILL.md` and `files/.agents/skills/debug/SKILL.md`.
+For deeper issues, use the debugging skills in `Python/.agents/skills/debug/SKILL.md` and `files/.agents/skills/debug/SKILL.md`.
 
 ---
 

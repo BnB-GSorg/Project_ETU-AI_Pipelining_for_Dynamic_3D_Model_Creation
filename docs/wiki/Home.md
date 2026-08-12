@@ -16,16 +16,16 @@ Welcome to the documentation for **ETU — AI Pipelining for Dynamic 3D Model Cr
 
 ```
 Project-ETU/
-├── demo/     # Python demo implementation
-├── src/      # C++23 core implementation
-├── docs/     # Documentation (you are here)
-└── files/    # Database-like asset storage
+├── Python/     # Python demo implementation
+├── src/        # C++23 core implementation
+├── docs/       # Documentation (you are here)
+└── files/      # Database-like asset storage
 ```
 
 ## 🚀 Quick Links
 
 - Root [README.md](../../README.md) — project overview and quick start
-- [`demo/AGENTS.md`](../../demo/AGENTS.md) — Python module agent instructions
+- [`Python/AGENTS.md`](../../Python/AGENTS.md) — Python module agent instructions
 - [`src/AGENTS.md`](../../src/AGENTS.md) — C++ module agent instructions
 - [`files/AGENTS.md`](../../files/AGENTS.md) — Files database agent instructions
 - [`docs/materials/`](../materials/) — Papers, slides, and figures

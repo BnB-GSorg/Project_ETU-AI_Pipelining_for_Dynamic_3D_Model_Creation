@@ -21,7 +21,7 @@ Skills can live in two places:
 
 | Skill | Location | Purpose |
 |-------|----------|---------|
-| `debug` (demo) | [`demo/.agents/skills/debug/SKILL.md`](../../demo/.agents/skills/debug/SKILL.md) | Python debugging: pytest, pdb, profiling, GPU/torch issues, data validation |
+| `debug` (demo) | [`Python/.agents/skills/debug/SKILL.md`](../../Python/.agents/skills/debug/SKILL.md) | Python debugging: pytest, pdb, profiling, GPU/torch issues, data validation |
 | `debug` (files) | [`files/.agents/skills/debug/SKILL.md`](../../files/.agents/skills/debug/SKILL.md) | Files database debugging: index validation, integrity checks, cache cleanup, schema repair |
 
 Both are project-local and scoped to their respective module, since debugging a Python numpy shape mismatch is a very different task from repairing a corrupted `index.json`.
@@ -50,7 +50,7 @@ Both are project-local and scoped to their respective module, since debugging a 
 
 An agent should reach for a skill when:
 - A description closely matches the current task (e.g., "a pytest test is failing" → `demo` debug skill)
-- The user explicitly asks for help debugging something in `demo/` or `files/`
+- The user explicitly asks for help debugging something in `Python/` or `files/`
 - Deeper diagnostics are needed than a quick one-off command
 
 You can also invoke a skill manually via the `/` slash command menu in Zed if you want to consult it without describing the problem first.
@@ -96,7 +96,7 @@ Consider adding these as the project grows:
 |------------|--------|---------|
 | `release` | root | Automate version bump + changelog + tag workflow |
 | `renderer-debug` | `src/` | GPU/graphics API debugging (DirectX/Metal/Vulkan/OpenGL specific) |
-| `benchmark` | `demo/` or `src/` | Standardized performance benchmarking harness |
+| `benchmark` | `Python/` or `src/` | Standardized performance benchmarking harness |
 | `asset-import` | `files/` | Guided workflow for importing and tagging new assets |
 
 When adding one of these, follow the same structure as the existing `debug` skills: a quick diagnostic flow at the top, then detailed sections with copy-pasteable commands/scripts.

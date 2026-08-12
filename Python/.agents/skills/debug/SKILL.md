@@ -82,7 +82,7 @@ Open the failing file and go to the bottom of the traceback first (it's usually 
 
 ### Add a Debug Breakpoint
 
-In `demo/src/etu_demo/pipeline.py` or wherever the crash occurs:
+In `Python/MVP/etu_demo/pipeline.py` or wherever the crash occurs:
 
 ```python
 breakpoint()  # Drops into pdb
@@ -374,7 +374,7 @@ logging.getLogger("etu_demo").setLevel(logging.DEBUG)
 
 | Symptom | Fix |
 |---------|-----|
-| `ModuleNotFoundError: etu_demo` | `pip install -e .` from `demo/` |
+| `ModuleNotFoundError: etu_demo` | `pip install -e .` from `Python/MVP/` |
 | `ImportError: No module named 'torch'` | `pip install torch` or skip GPU tests |
 | `ImportError: No module named 'trimesh'` | `pip install trimesh` |
 | `ImportError: No module named 'skimage'` | `pip install scikit-image` (optional, used for marching cubes) |

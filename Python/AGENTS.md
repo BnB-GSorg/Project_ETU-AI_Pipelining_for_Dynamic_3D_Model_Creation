@@ -17,16 +17,16 @@ This directory contains the **Python demo implementation** of the ETU AI pipelin
 ## Directory Structure
 
 ```
-demo/
-├── pyproject.toml          # Project config (dependencies, tools)
-├── requirements.txt        # Pip fallback
-├── src/etu_demo/           # Main package
-│   ├── __init__.py         # Package exports
-│   ├── main.py             # CLI entry point
-│   ├── pipeline.py         # Core pipeline logic
-│   └── utils.py            # I/O and helpers
+Python/MVP/
+├── pyproject.toml           # Project config (dependencies, tools)
+├── requirements.txt         # Pip fallback
+├── etu_demo/                # Main package
+│   ├── __init__.py          # Package exports
+│   ├── main.py              # CLI entry point
+│   ├── pipeline.py          # Core pipeline logic
+│   └── utils.py             # I/O and helpers
 └── tests/
-    └── test_pipeline.py    # Unit tests
+    └── test_pipeline.py     # Unit tests
 ```
 
 ## Key Classes

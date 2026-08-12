@@ -1,12 +1,12 @@
 # Reference
 
-Full API reference for the ETU Python demo (`demo/`) and C++ core (`src/`).
+Full API reference for the ETU Python demo (`Python/`) and C++ core (`src/`).
 
 ---
 
 ## Python Demo API (`etu_demo`)
 
-Package: `demo/src/etu_demo/`
+Package: `Python/MVP/etu_demo/`
 
 ### `etu_demo.PipelineConfig`
 

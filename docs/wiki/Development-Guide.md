@@ -8,7 +8,7 @@ Coding standards, workflows, and contribution practices for ETU.
 
 ```
 Project-ETU/
-├── demo/          # Python demo (prototyping, research)
+├── Python/        # Python demo (prototyping, research)
 │   ├── AGENTS.md
 │   └── .agents/skills/debug/
 ├── src/           # C++23 core (production)
@@ -21,13 +21,13 @@ Project-ETU/
     └── .agents/skills/debug/
 ```
 
-Each module (`demo/`, `src/`, `files/`) has its own `AGENTS.md` with module-specific conventions — read those before making changes in that module.
+Each module (`Python/`, `src/`, `files/`) has its own `AGENTS.md` with module-specific conventions — read those before making changes in that module.
 
 ---
 
 ## 2. Coding Standards
 
-### Python (`demo/`)
+### Python (`Python/`)
 
 | Rule | Tool/Convention |
 |------|------------------|
@@ -96,7 +96,7 @@ test(demo): add coverage for quality scaling
 ### Pull Requests
 
 1. Ensure tests pass for any module you touched (`pytest` and/or `ctest`).
-2. Keep changes scoped — don't mix `demo/` and `src/` changes unless the feature spans both.
+2. Keep changes scoped — don't mix `Python/` and `src/` changes unless the feature spans both.
 3. Update relevant `AGENTS.md` if you introduce new conventions.
 4. Update [Reference](Reference.md) if you add/change public API.
 
@@ -106,11 +106,11 @@ test(demo): add coverage for quality scaling
 
 ### To the Python Demo
 
-1. Implement in `demo/src/etu_demo/<module>.py`.
+1. Implement in `Python/MVP/etu_demo/<module>.py`.
 2. Add type hints + docstrings.
-3. Add unit tests in `demo/tests/`.
+3. Add unit tests in `Python/MVP/tests/`.
 4. Run `pytest`, `ruff`, `mypy`.
-5. Update `demo/README.md` and [Reference](Reference.md) if public API changed.
+5. Update `Python/MVP/README.md` and [Reference](Reference.md) if public API changed.
 
 ### To the C++ Core
 
@@ -153,7 +153,7 @@ Applies to both Python and C++ pipelines:
 
 Use the project's built-in debugging skills instead of ad-hoc troubleshooting:
 
-- `demo/.agents/skills/debug/SKILL.md` — Python debugging (pytest, pdb, profiling, GPU/torch, data validation)
+- `Python/.agents/skills/debug/SKILL.md` — Python debugging (pytest, pdb, profiling, GPU/torch, data validation)
 - `files/.agents/skills/debug/SKILL.md` — Files database debugging (index validation, integrity checks, cache cleanup)
 
 These are automatically available to AI agents working in this repo, and can also be read manually as a troubleshooting reference.
@@ -175,10 +175,10 @@ When updating docs in `docs/wiki/`:
 
 Before tagging a release:
 
-- [ ] `pytest` passes in `demo/`
+- [ ] `pytest` passes in `Python/MVP/`
 - [ ] `ctest` passes in `src/build/`
-- [ ] `ruff check` and `mypy` clean in `demo/`
+- [ ] `ruff check` and `mypy` clean in `Python/MVP/`
 - [ ] No compiler warnings introduced in `src/` (check `cmake --build build` output)
 - [ ] [Reference](Reference.md) reflects current public API
-- [ ] Version bumped in `demo/pyproject.toml` (`project.version`) and `src/CMakeLists.txt` (`project(ETU VERSION ...)`)
+- [ ] Version bumped in `Python/pyproject.toml` (`project.version`) and `src/CMakeLists.txt` (`project(ETU VERSION ...)`)
 - [ ] Changelog updated (see `docs/AGENTS.md` § Changelog Format)

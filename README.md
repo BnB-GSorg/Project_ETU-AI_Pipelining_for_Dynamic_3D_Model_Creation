@@ -31,20 +31,20 @@ ETU (Efficient Topology Unfolding) is an AI-powered pipeline for dynamic 3D mode
 
 ```
 Project-ETU/
-├── demo/           # Python function implementation
-│   ├── src/        #    Source code
-│   └── tests/      #    Unit tests
-├── src/            # 🔧 C++ core implementation
-│   ├── include/    #    Public headers
-│   ├── src/        #    Implementation
-│   └── tests/      #    Unit tests
-├── docs/           # 📚 Documentation
-│   ├── wiki/       #    Wiki pages
-│   └── materials/  #    Papers, slides, figures
-└── files/          # 📦 File database
-    ├── assets/     #    Input assets
-    ├── cache/      #    Cached data
-    └── exports/    #    Generated outputs
+├── Python/     # Python demo implementation
+│   ├── MVP/    #    Demo pipeline & tests
+│   └── src/    #    Experimental scaffolding (WIP)
+├── src/        # 🔧 C++ core implementation
+│   ├── include/#    Public headers
+│   ├── src/    #    Implementation
+│   └── tests/  #    Unit tests
+├── docs/       # 📚 Documentation
+│   ├── wiki/   #    Wiki pages
+│   └── materials/#    Papers, slides, figures
+└── files/      # 📦 File database
+    ├── assets/ #    Input assets
+    ├── cache/  #    Cached data
+    └── exports/#    Generated outputs
 ```
 
 ## 🚀 Quick Start
@@ -52,7 +52,7 @@ Project-ETU/
 ### Python Demo
 
 ```bash
-cd demo
+cd Python/MVP
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e .

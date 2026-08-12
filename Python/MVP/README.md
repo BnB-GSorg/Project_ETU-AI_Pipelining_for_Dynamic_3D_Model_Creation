@@ -55,15 +55,14 @@ model.export("output.obj")
 ## Project Structure
 
 ```
-demo/
+Python/MVP/
 ├── pyproject.toml      # Project configuration
 ├── requirements.txt    # Dependencies
-├── src/
-│   └── etu_demo/       # Main package
-│       ├── __init__.py
-│       ├── main.py     # CLI entry point
-│       ├── pipeline.py # Core pipeline
-│       └── utils.py    # Utilities
+├── etu_demo/           # Main package
+│   ├── __init__.py
+│   ├── main.py         # CLI entry point
+│   ├── pipeline.py     # Core pipeline
+│   └── utils.py        # Utilities
 └── tests/
     └── test_pipeline.py
 ```
