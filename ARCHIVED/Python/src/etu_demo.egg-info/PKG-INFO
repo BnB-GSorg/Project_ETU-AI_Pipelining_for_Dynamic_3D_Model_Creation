@@ -1,0 +1,42 @@
+Metadata-Version: 2.4
+Name: etu-demo
+Version: 0.1.0
+Summary: Demo implementation of AI Pipelining for Dynamic 3D Model Creation
+Author-email: BnB Organization <contact@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation
+Project-URL: Documentation, https://github.com/BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation#readme
+Project-URL: Repository, https://github.com/BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation
+Project-URL: Issues, https://github.com/BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/issues
+Keywords: 3d,ai,pipeline,model-generation,deep-learning
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Multimedia :: Graphics :: 3D Modeling
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: torch>=2.0.0
+Requires-Dist: trimesh>=4.0.0
+Requires-Dist: pillow>=10.0.0
+Requires-Dist: tqdm>=4.65.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Provides-Extra: viz
+Requires-Dist: matplotlib>=3.7.0; extra == "viz"
+Requires-Dist: open3d>=0.17.0; extra == "viz"
+Requires-Dist: pyglet>=2.0.0; extra == "viz"
+Provides-Extra: full
+Requires-Dist: etu-demo[dev,viz]; extra == "full"

@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+src/etu_demo/__init__.py
+src/etu_demo/main.py
+src/etu_demo/pipeline.py
+src/etu_demo/utils.py
+src/etu_demo.egg-info/PKG-INFO
+src/etu_demo.egg-info/SOURCES.txt
+src/etu_demo.egg-info/dependency_links.txt
+src/etu_demo.egg-info/entry_points.txt
+src/etu_demo.egg-info/requires.txt
+src/etu_demo.egg-info/top_level.txt
+tests/test_pipeline.py

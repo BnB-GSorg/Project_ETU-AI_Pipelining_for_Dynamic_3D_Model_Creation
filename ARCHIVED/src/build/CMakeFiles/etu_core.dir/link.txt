@@ -1,0 +1,2 @@
+/usr/bin/ar qc libetu_core.a CMakeFiles/etu_core.dir/src/etu.cpp.o CMakeFiles/etu_core.dir/src/pipeline.cpp.o CMakeFiles/etu_core.dir/src/renderer.cpp.o CMakeFiles/etu_core.dir/src/gpu_context.cpp.o
+/usr/bin/ranlib libetu_core.a

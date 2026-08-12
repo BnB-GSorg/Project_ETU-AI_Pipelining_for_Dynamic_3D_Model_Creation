@@ -1,0 +1,38 @@
+[
+{
+  "directory": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/build",
+  "command": "/usr/bin/c++ -DETU_HAS_METAL=1 -DETU_HAS_MPS=1 -DETU_HAS_OPENGL=1 -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/include\" -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src\" -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -DNDEBUG -O3 -DNDEBUG -march=native -std=c++23 -arch arm64 -Wall -Wextra -Wpedantic -Wno-unused-parameter -fPIC -o CMakeFiles/etu_core.dir/src/etu.cpp.o -c \"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/etu.cpp\"",
+  "file": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/etu.cpp",
+  "output": "CMakeFiles/etu_core.dir/src/etu.cpp.o"
+},
+{
+  "directory": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/build",
+  "command": "/usr/bin/c++ -DETU_HAS_METAL=1 -DETU_HAS_MPS=1 -DETU_HAS_OPENGL=1 -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/include\" -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src\" -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -DNDEBUG -O3 -DNDEBUG -march=native -std=c++23 -arch arm64 -Wall -Wextra -Wpedantic -Wno-unused-parameter -fPIC -o CMakeFiles/etu_core.dir/src/pipeline.cpp.o -c \"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/pipeline.cpp\"",
+  "file": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/pipeline.cpp",
+  "output": "CMakeFiles/etu_core.dir/src/pipeline.cpp.o"
+},
+{
+  "directory": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/build",
+  "command": "/usr/bin/c++ -DETU_HAS_METAL=1 -DETU_HAS_MPS=1 -DETU_HAS_OPENGL=1 -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/include\" -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src\" -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -DNDEBUG -O3 -DNDEBUG -march=native -std=c++23 -arch arm64 -Wall -Wextra -Wpedantic -Wno-unused-parameter -fPIC -o CMakeFiles/etu_core.dir/src/renderer.cpp.o -c \"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/renderer.cpp\"",
+  "file": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/renderer.cpp",
+  "output": "CMakeFiles/etu_core.dir/src/renderer.cpp.o"
+},
+{
+  "directory": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/build",
+  "command": "/usr/bin/c++ -DETU_HAS_METAL=1 -DETU_HAS_MPS=1 -DETU_HAS_OPENGL=1 -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/include\" -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src\" -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -DNDEBUG -O3 -DNDEBUG -march=native -std=c++23 -arch arm64 -Wall -Wextra -Wpedantic -Wno-unused-parameter -fPIC -o CMakeFiles/etu_core.dir/src/gpu_context.cpp.o -c \"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/gpu_context.cpp\"",
+  "file": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/gpu_context.cpp",
+  "output": "CMakeFiles/etu_core.dir/src/gpu_context.cpp.o"
+},
+{
+  "directory": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/build",
+  "command": "/usr/bin/c++ -DETU_HAS_METAL=1 -DETU_HAS_MPS=1 -DETU_HAS_OPENGL=1 -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/include\" -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -DNDEBUG -O3 -DNDEBUG -march=native -std=c++23 -arch arm64 -Wall -Wextra -Wpedantic -Wno-unused-parameter -fPIC -o CMakeFiles/etu_app.dir/src/main.cpp.o -c \"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/main.cpp\"",
+  "file": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/src/main.cpp",
+  "output": "CMakeFiles/etu_app.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/build",
+  "command": "/usr/bin/c++ -DETU_HAS_METAL=1 -DETU_HAS_MPS=1 -DETU_HAS_OPENGL=1 -I\"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/include\" -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -DNDEBUG -O3 -DNDEBUG -march=native -std=c++23 -arch arm64 -Wall -Wextra -Wpedantic -Wno-unused-parameter -fPIC -o CMakeFiles/etu_tests.dir/tests/test_main.cpp.o -c \"/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/tests/test_main.cpp\"",
+  "file": "/Users/duidui/Documents/81n's Knowledge base/The knowledge base of Projects/Raw/Project-ETU/src/tests/test_main.cpp",
+  "output": "CMakeFiles/etu_tests.dir/tests/test_main.cpp.o"
+}
+]
