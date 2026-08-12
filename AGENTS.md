@@ -41,16 +41,22 @@ tracked. Everything else is intentionally local.
 | Action | Command |
 |--------|---------|
 | Python | `.env/Python/etu/bin/python` |
-| Test | `.env/Python/etu/bin/pytest` |
+| Test | `.env/Python/etu/bin/pytest src/` |
 | Lint | `.env/Python/etu/bin/ruff check src/` |
-| Format | `.env/Python/etu/bin/black src/` |
+| Format | `BLACK_CACHE_DIR=/tmp/etu-black .env/Python/etu/bin/black src/` |
 | Update deps | `mamba env update --prefix .env/Python/etu -f environment.yml --prune` |
 | Activate | `conda activate ./.env/Python/etu` |
 | Build C++ | `cmake -S src -B .env/build -G Ninja && cmake --build .env/build` |
 
 Add dependencies by editing `environment.yml` and re-running the update command
-— never install ad hoc. If mamba cannot write its cache, prefix commands with
-`CONDA_PKGS_DIRS=.env/Python/.pkgs`.
+— never install ad hoc.
+
+### Two environment quirks, both caused by the long repository path
+
+| Symptom | Fix |
+|---------|-----|
+| mamba: `Could not find any writable cache directory` | prefix with `CONDA_PKGS_DIRS=.env/Python/.pkgs` |
+| black: `OSError: AF_UNIX path too long` | prefix with `BLACK_CACHE_DIR=/tmp/etu-black` |
 
 ## Skills
 
