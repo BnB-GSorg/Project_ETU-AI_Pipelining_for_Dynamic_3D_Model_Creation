@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -O3 -DNDEBUG -march=native -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/etu_app.dir/src/main.cpp.o -o etu_app  libetu_core.a -framework Metal -framework MetalKit -framework QuartzCore -framework OpenGL -framework MetalPerformanceShaders

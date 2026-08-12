@@ -1,0 +1,28 @@
+# Project ETU - Python environment
+#
+# Create:  mamba env create --prefix .env/Python/etu -f environment.yml
+# Update:  mamba env update --prefix .env/Python/etu -f environment.yml --prune
+# Use:     conda activate ./.env/Python/etu
+#
+# The built environment lives in .env/Python/etu and is NOT committed.
+# This file is the single source of truth - add dependencies here, never ad hoc.
+#
+# If mamba reports "no writable cache directory", prefix the command with:
+#   CONDA_PKGS_DIRS=.env/Python/.pkgs
+
+name: etu
+
+channels:
+  - conda-forge
+
+dependencies:
+  # Runtime
+  - python=3.12
+  - numpy
+  - pillow
+  - wrapt        # decorators used by src/main.py
+
+  # Test + lint
+  - pytest
+  - ruff
+  - black

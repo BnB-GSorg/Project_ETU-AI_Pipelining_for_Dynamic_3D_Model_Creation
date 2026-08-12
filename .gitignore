@@ -1,0 +1,38 @@
+# Folders
+
+/.env/
+
+/ARCHIVED/
+
+/demo/
+
+/.agents/
+
+
+# Files
+
+/WIKI.md
+
+/.zed
+
+
+# Python / conda  (local env lives in /.env/Python/etu)
+
+__pycache__/
+
+*.py[cod]
+
+.pytest_cache/
+
+.ruff_cache/
+
+.conda/
+
+.condarc
+
+/cache/
+
+
+# macOS
+
+.DS_Store

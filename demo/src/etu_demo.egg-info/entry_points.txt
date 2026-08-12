@@ -1,2 +1,0 @@
-[console_scripts]
-etu-demo = etu_demo.main:main
