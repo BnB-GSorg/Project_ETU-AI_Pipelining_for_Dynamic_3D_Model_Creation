@@ -103,7 +103,7 @@ Requires **Python 3.10+** and **ffmpeg** on your PATH (for video frame extractio
 ### 1. Verify offline (no key)
 
 ```bash
-python3 scripts/etu_understand.py --self-test    # 6 tests: general lift, template routing, fallback, CV module, identity, sampling
+python3 scripts/etu_understand.py --self-test    # 7 tests: general lift, template routing, fallback, CV module, identity, sampling, stage guidance
 python3 scripts/etu_comprehend.py --self-test    # closed-set template classifier
 ```
 Both must print `self-test: PASS`.
@@ -120,8 +120,14 @@ scene from the **Scene** dropdown; drag to orbit, `Space` to play, slider to scr
 ### 3. Set your reasoning API key
 
 ```bash
-export DEEPSEEK_API_KEY=sk-...     # the sole LLM — classifies, labels, decides template vs general
+python3 scripts/etu_config.py set deepseek     # interactive, hidden input
+# non-interactive: python3 scripts/etu_config.py set deepseek --key sk-...
 ```
+Stores the key per-user in `~/.config/etu/config.json` (chmod 600, **outside**
+the repo) — so it survives `git pull` and works on any machine after a single
+command. Resolution order when the engine runs: `DEEPSEEK_API_KEY` (env) →
+config file. List/remove with `etu_config.py get` / `unset` / `path`.
+
 That's the only key you need. CV analysis runs locally with OpenCV — no vision
 API keys, no Gemini, no network calls for feature extraction.
 
@@ -151,6 +157,9 @@ and the saved scene path.
   fast/complex motion
 - `--transcript file.vtt` — optional narration text as evidence for the
   reasoning model
+- `--interactive` — pause at each stage transition and describe the change in
+  natural language (Enter = let the model guess). Your notes are folded into
+  the reasoning model and recorded as HUD events in the scene.
 
 No video, only images? Use `--frames path/to/pngs` instead of `--video`.
 
@@ -203,7 +212,7 @@ Pipeline stages: ingest (multi-view) → keyframes → reconstruct (COLMAP/3DGS/
 | `self-test` import error | run from `ana_eng_ver2/`, `pip install -r requirements.txt` |
 | `--video` errors "Neither OpenCV nor ffmpeg" | install ffmpeg (must be on PATH) |
 | only 1–2 objects detected, motion lost | already handled — CV samples by change; if it persists, raise `--max-cv-images` |
-| `missing API key — set DEEPSEEK_API_KEY` | export it in the *same* shell; only needed for `--mode auto`/`template` |
+| `missing API key ...` | run `python scripts/etu_config.py set deepseek` (or `export DEEPSEEK_API_KEY` in the same shell); only needed for `--mode auto`/`template` |
 | Viewer all black / blank | use `serve.py` localhost URL, not `file://`; hard-reload |
 | Viewer "couldn't fetch sample" | run `scripts/serve.py`, or drag a `.json` in |
 | Scene plays too fast | use **Speed** control (0.25×) and scrub the slider |
@@ -225,6 +234,7 @@ ana_eng_ver2/
 │   │   │   ├── classify.py    #   text evidence → LessonSpec (closed-set, abstaining)
 │   │   │   ├── catalog.py     #   template catalog (7 concepts + params)
 │   │   │   ├── llm.py         #   OpenAI-compatible chat client
+│   │   │   ├── credentials.py #   per-user API-key store (config file)
 │   │   │   └── evidence.py    #   transcript/hint/OCR gathering
 │   │   ├── understand/        # FeatureGraph extraction + 3D lifting
 │   │   │   ├── schema.py      #   FeatureGraph (domain-agnostic objects+changes)
@@ -234,6 +244,7 @@ ana_eng_ver2/
 │   │   │   └── lift.py        #   FeatureGraph → 3D/4D Scene (event keyframes + lifetime)
 │   │   ├── templates/         # 7 math templates
 │   │   ├── router.py          # Template upgrade vs general fallback
+│   │   ├── guide.py           # Stage-transition NL guidance (interactive)
 │   │   ├── spec.py            # LessonSpec — comprehend↔author seam
 │   │   └── synthesize.py      # LessonSpec → Scene (dispatch to template)
 │   ├── stages/                # Reconstruction pipeline
@@ -252,6 +263,7 @@ ana_eng_ver2/
 │   ├── etu_make.py            # Generate template sample scenes
 │   ├── etu_understand.py      # Universal engine CLI (CV + reasoning)
 │   ├── etu_comprehend.py      # Comprehension test (reasoning model only)
+│   ├── etu_config.py          # API-key configuration (per-user config file)
 │   ├── mmi_convert.py         # mmi-lite ↔ mmi-git converter
 │   ├── mmi_validate.py        # Format validator
 │   ├── run_pipeline.py        # Reconstruction pipeline CLI

@@ -53,13 +53,23 @@ def make_config(provider: str = "deepseek", model: str | None = None) -> LLMConf
     return cfg
 
 
+def _resolve_api_key(cfg: LLMConfig) -> str | None:
+    """Resolve a provider's API key: environment variable first, then config file."""
+    key = os.environ.get(cfg.api_key_env)
+    if key:
+        return key
+    # Lazy import — avoids a circular import through the package __init__.
+    from mmi.etu.comprehend.credentials import get_api_key
+    return get_api_key(cfg.provider)
+
+
 def chat(cfg: LLMConfig, system: str, user: str, json_mode: bool = True, timeout: int = 60) -> str:
     """Single-turn chat completion. Returns the assistant message content (str)."""
-    key = os.environ.get(cfg.api_key_env)
+    key = _resolve_api_key(cfg)
     if not key:
         raise RuntimeError(
-            f"missing API key — set {cfg.api_key_env} in your environment "
-            f"(provider={cfg.provider})."
+            f"missing API key for provider {cfg.provider!r} — set {cfg.api_key_env} "
+            f"in your environment, or run: python scripts/etu_config.py set {cfg.provider}"
         )
     url = cfg.base_url.rstrip("/") + "/chat/completions"
     body: dict = {
@@ -100,9 +110,9 @@ def vision_chat(cfg: LLMConfig, system: str, user_text: str, image_paths: list[s
     Works across vision providers (OpenAI, Gemini's compat endpoint, OpenRouter).
     Images are inlined as base64 data URLs.
     """
-    key = os.environ.get(cfg.api_key_env)
+    key = _resolve_api_key(cfg)
     if not key:
-        raise RuntimeError(f"missing API key — set {cfg.api_key_env} (vision provider={cfg.provider}).")
+        raise RuntimeError(f"missing API key for provider {cfg.provider!r} (vision provider).")
     if not cfg.vision:
         raise RuntimeError(f"provider {cfg.provider!r} is not vision-capable.")
 

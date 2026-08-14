@@ -45,7 +45,8 @@ def _extract_frames(video: Path, workdir: Path, target_fps: float = 10.0) -> lis
     from mmi.stages import ingest
     cfg = PipelineConfig(video=video, workdir=workdir, out_scene=workdir / "_unused.json",
                          target_fps=target_fps, max_frames=240)
-    return ingest.run(cfg).frame_paths
+    ing = ingest.run(cfg)
+    return ing.views[0].frame_paths
 
 
 def _self_test() -> int:
@@ -151,6 +152,26 @@ def _self_test() -> int:
           f"vs {uniform_in_burst} for uniform, ok={sampling_ok}")
     ok = ok and sampling_ok
 
+    # g) STAGE GUIDANCE (offline, fake brain — no network)
+    from mmi.etu.guide import (apply_refinements, collect_guidance, refine, stage_boundaries)
+    fg2 = FeatureGraph.from_dict({
+        "summary": "a cube turns", "fps": 12, "duration": 3,
+        "objects": [
+            {"id": "c", "label": "cube", "shape": "box", "color": "#ff0000",
+             "timeline": [{"t": 0, "x": 0.5, "y": 0.5}, {"t": 1, "x": 0.5, "y": 0.5},
+                          {"t": 2, "x": 0.7, "y": 0.3}]},
+        ]})
+    bounds = stage_boundaries(fg2)
+    fake_prompt = lambda s: "the cube rotates 90 degrees clockwise"
+    notes = collect_guidance(fg2, prompt=fake_prompt, interactive=True)
+    fake_brain = lambda s, u: json.dumps({"labels": {"c": "top face"}, "relations": []})
+    apply_refinements(fg2, refine(fg2, notes, chat_fn=fake_brain))
+    guide_ok = (bounds == [(0, 1), (1, 2)] and len(notes) == 2
+                and notes[0].text == "the cube rotates 90 degrees clockwise"
+                and fg2.objects[0].label == "top face")
+    print(f"  [guide  ] {len(notes)} notes over {bounds}, relabeled -> {fg2.objects[0].label!r}, ok={guide_ok}")
+    ok = ok and guide_ok
+
     print("self-test:", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 
@@ -168,6 +189,9 @@ def main() -> int:
     ap.add_argument("--max-cv-images", type=int, default=8,
                     help="max frames for CV analysis (change-driven sampling)")
     ap.add_argument("--min-confidence", type=float, default=0.55)
+    ap.add_argument("--interactive", action="store_true",
+                    help="pause at each stage transition and ask the user to describe "
+                         "the change in natural language (Enter = let the model guess)")
     ap.add_argument("--workdir", type=Path, default=Path("data/work"))
     ap.add_argument("--out", type=Path, default=Path("data/samples/auto.json"))
     ap.add_argument("--self-test", action="store_true")
@@ -194,8 +218,10 @@ def main() -> int:
 
     r = comprehend_any(frames=frames, transcript_text=transcript_text, hint=args.hint,
                        brain_cfg=bcfg, prefer=args.mode, min_confidence=args.min_confidence,
-                       max_cv_images=args.max_cv_images)
+                       max_cv_images=args.max_cv_images, interactive=args.interactive)
 
+    if r.notes:
+        print(f"  guidance  : {len(r.notes)} stage-change note(s) recorded")
     if r.feature_graph:
         n_objs = len(r.feature_graph.objects)
         objs_str = ", ".join(f"{o.id}({o.shape})" for o in r.feature_graph.objects[:5])
@@ -204,6 +230,9 @@ def main() -> int:
     if not r.scene:
         print(f"FAILED — {r.rationale}")
         return 2
+    # Persist the human's stage-change notes as HUD events (self-describing).
+    for n in r.notes:
+        r.scene.events.append({"t": n.t_to, "label": f"[stage {n.t_from}->{n.t_to}] {n.text}"})
     r.scene.save(args.out)
     print(f"authored -> {args.out}  ({args.out.stat().st_size/1024:.1f} KB, {r.scene.duration_frames} frames)")
     print("open the viewer and drag this file in.")

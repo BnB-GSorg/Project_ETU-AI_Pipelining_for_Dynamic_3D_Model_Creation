@@ -23,12 +23,13 @@ Strategy:
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from mmi.etu import synthesize
 from mmi.etu.comprehend import comprehend
 from mmi.etu.comprehend.llm import LLMConfig
+from mmi.etu.guide import TransitionNote, apply_refinements, collect_guidance, guidance_text, refine
 from mmi.etu.understand import FeatureGraph, extract, lift
 from mmi.etu.understand.schema import FeatureGraph as FG
 from mmi.formats.mmi_scene import Scene
@@ -43,6 +44,7 @@ class RouterResult:
     confidence: float
     rationale: str
     feature_graph: FeatureGraph | None
+    notes: list[TransitionNote] = field(default_factory=list)  # human stage-change guidance
 
 
 def comprehend_any(
@@ -55,6 +57,8 @@ def comprehend_any(
     chat_brain: Callable[[str, str], str] | None = None,
     fps: int = 12,
     max_cv_images: int = 8,
+    interactive: bool = False,
+    guide_prompt: Callable[[str], str | None] | None = None,
 ) -> RouterResult:
     """Route a 2D animation to the best 3D lift — single reasoning model only.
 
@@ -72,15 +76,32 @@ def comprehend_any(
         chat_brain: reasoning model callable
         fps: frames per second for FeatureGraph
         max_cv_images: max frames for CV analysis
+        interactive: if True, pause at each stage transition and ask the user to
+            describe the change in natural language (empty = let the model guess)
+        guide_prompt: prompt callback for interactive guidance (defaults to input())
     """
     fg: FeatureGraph | None = None
     if frames:
         # Deterministic CV extraction — NO vision LLM
         fg = extract(frames, fps=fps, max_images=max_cv_images, hint=hint)
 
+    # Optional human-in-the-loop stage guidance (interactive only).
+    notes: list[TransitionNote] = []
+    if interactive and fg and fg.objects:
+        notes = collect_guidance(fg, prompt=guide_prompt, interactive=True)
+        if notes:
+            # Fold the notes into the reasoning model and let it correct labels.
+            # Best-effort: guidance must never break the automatic path.
+            try:
+                apply_refinements(fg, refine(fg, notes, cfg=brain_cfg, chat_fn=chat_brain))
+            except Exception:
+                pass
+
     # 1+2) try the closed-set template upgrade (reasoning model only)
     if prefer != "general":
         parts = [transcript_text, hint]
+        if notes:
+            parts.append("Human guidance on stage changes:\n" + guidance_text(notes))
         if fg:
             parts.append(fg.summary)
             parts += [o.label for o in fg.objects if o.label]
@@ -97,13 +118,13 @@ def comprehend_any(
         if evidence:
             c = comprehend(evidence, cfg=brain_cfg, chat_fn=chat_brain, min_confidence=min_confidence)
             if c.spec:
-                return RouterResult(synthesize(c.spec), "template", c.concept, c.confidence, c.rationale, fg)
+                return RouterResult(synthesize(c.spec), "template", c.concept, c.confidence, c.rationale, fg, notes)
             if prefer == "template":
-                return RouterResult(None, "none", c.concept, c.confidence, c.rationale, fg)
+                return RouterResult(None, "none", c.concept, c.confidence, c.rationale, fg, notes)
 
     # 3) general fallback — lift FeatureGraph directly
     if fg and not fg.validate():
-        return RouterResult(lift(fg), "general", "general-lift", 1.0, "lifted FeatureGraph", fg)
+        return RouterResult(lift(fg), "general", "general-lift", 1.0, "lifted FeatureGraph", fg, notes)
 
     reason = "no frames to extract from" if not fg else f"invalid FeatureGraph: {fg.validate()}"
     return RouterResult(None, "none", "none", 0.0, reason, fg)

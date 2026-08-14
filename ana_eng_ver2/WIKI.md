@@ -1,6 +1,6 @@
 # Project ETU — WIKI
 
-**Last Updated:** 2026-08-04
+**Last Updated:** 2026-08-14
 **Location:** ~/Documents/progproj/projute/ana_eng_ver2/
 
 ## 1. Architecture Overview
@@ -148,6 +148,23 @@ handles motion identically for all types; only the viewer dispatch differs.
 
 ## 4. CLI Usage
 
+### API Key Configuration (per-user, no shell editing)
+
+```bash
+# Store each provider's key once — interactive, hidden input:
+python scripts/etu_config.py set deepseek
+# Non-interactive:
+python scripts/etu_config.py set deepseek --key sk-...
+# List configured providers (keys redacted):
+python scripts/etu_config.py get
+# Show config file location:
+python scripts/etu_config.py path
+```
+
+Key priority when the engine runs: environment variable (e.g. DEEPSEEK_API_KEY)
+> `~/.config/etu/config.json` (chmod 600). No ~/.bashrc editing required for a
+distributable install.
+
 ### Dimensional Lifting Pipeline
 
 ```bash
@@ -157,6 +174,12 @@ python scripts/etu_make.py --all
 # Universal engine (single video → 3D) — CV analysis extracts objects, reasoning model decides
 python scripts/etu_understand.py --video data/work/process.mp4 \
     --mode auto --out data/samples/output.json
+
+# Interactive: pause at each stage transition and describe the change in natural language.
+# The notes are folded into the reasoning model as extra evidence (it may correct object
+# labels/relations) and persisted as HUD events. Enter = let the model guess (auto path).
+python scripts/etu_understand.py --video data/work/process.mp4 \
+    --mode auto --out data/samples/output.json --interactive
 
 # Comprehension test (reasoning model only — classifies from transcript/hint)
 python scripts/etu_comprehend.py --video data/work/fourier.mp4
@@ -196,8 +219,10 @@ ana_eng_ver2/
 │   │   │   ├── analysis.py    # Optical flow, edges, contours, colors
 │   │   │   └── extract.py     # FrameAnalysis → FeatureGraph
 │   │   ├── comprehend/        # Reasoning model classification (sole LLM)
+│   │   │   └── credentials.py # Per-user API-key store (config file)
 │   │   ├── understand/        # FeatureGraph extraction + 3D lifting
 │   │   ├── templates/        # 7 math templates
+│   │   ├── guide.py          # Stage-transition NL guidance (interactive, optional)
 │   │   └── router.py         # Template upgrade vs general fallback
 │   ├── stages/               # Reconstruction pipeline stages
 │   │   ├── ingest.py         # Multi-view video → frames
@@ -215,6 +240,7 @@ ana_eng_ver2/
 │   ├── etu_make.py           # Generate template sample scenes
 │   ├── etu_understand.py     # Universal engine CLI
 │   ├── etu_comprehend.py     # Comprehension test CLI
+│   ├── etu_config.py         # API-key configuration (per-user config file)
 │   ├── mmi_convert.py        # mmi-lite ↔ mmi-git converter
 │   ├── run_pipeline.py       # Reconstruction pipeline CLI
 │   └── serve.py              # HTTP server for viewer
