@@ -21,6 +21,7 @@ dependencies:
   - numpy
   - pillow
   - wrapt        # decorators used by src/main.py
+  - opencv       # deterministic CV for FeatureGraph extraction (imports as cv2)
 
   # Test + lint
   - pytest
