@@ -34,15 +34,40 @@ The previous implementation is retired. It was too complex to read and
 maintain, so the rewrite prioritises simplicity: readable beats clever, and no
 abstraction arrives before a second caller needs it.
 
+Built so far: both scene formats, fully tested.
+
+- **mmi-lite** (`etu/formats/scene.py`) — a scene as objects, each with a
+  geometry (point cloud, box, surface, or line) and a sparse keyframe track;
+  the viewer interpolates between keyframes (position/scale/opacity lerp,
+  rotation slerp).
+- **mmi-git v0.3** (`etu/formats/git.py`) — the same scene stored as an
+  initial model, a chain of per-frame commits (a 4×4 pose delta per part),
+  and a final model, so it plays back forward *and* backward without
+  replaying from frame 0 every time. Reads v0.1/v0.2 files too.
+- **Compiler** (`etu/formats/compiler.py`) — converts mmi-lite ⇄ mmi-git in
+  both directions, carrying position, rotation, scale, and opacity.
+- **Validator** (`etu/formats/validate.py`) — detects which of the two
+  formats a file is from its own contents and validates accordingly.
+
+Not yet built: the CV/LLM understanding pipeline, the CLI commands, and the
+viewer — see `src/tests/` for what currently has coverage.
+
 ## 📁 Layout
 
 ```
 Project-ETU/
-├── src/              # The engine — all development happens here
-│   ├── main.py       #   entry point + command loop
-│   └── lib.py        #   utility helpers + file registry
-├── environment.yml   # Python dependency spec
-├── AGENTS.md         # Working agreement, also read by AI coding agents
+├── src/                      # The engine — all development happens here
+│   ├── main.py               #   entry point + command loop
+│   ├── lib.py                #   utility helpers + file registry
+│   ├── etu/
+│   │   └── formats/
+│   │       ├── scene.py      #   mmi-lite
+│   │       ├── git.py        #   mmi-git v0.3
+│   │       ├── compiler.py   #   mmi-lite <-> mmi-git
+│   │       └── validate.py   #   format auto-detect + validation
+│   └── tests/                #   pytest suite for the above
+├── environment.yml           # Python dependency spec
+├── AGENTS.md                 # Working agreement, also read by AI coding agents
 └── README.md
 ```
 
