@@ -299,7 +299,10 @@ class GitScene:
         t = max(0, min(int(t), self.duration_frames - 1))
         before, after = self._surrounding_snapshots(t)
 
-        if before is None or (after is not None and (after.t - t) < (t - before.t)):
+        rewind_is_closer = after is not None and (
+            before is None or (after.t - t) < (t - before.t)
+        )
+        if rewind_is_closer:
             return self._rewind_to(after, t)
         return self._replay_to(before, t)
 
@@ -422,11 +425,10 @@ def _apply(poses: dict[str, dict[str, Any]], commit: Commit, forward: bool) -> N
         pose.update(decompose(current @ delta))
 
     for pid, value in commit.opacity.items():
-        if pid in poses:
-            # Rewinding restores what the previous commit left, which the
-            # snapshot we started from already accounts for.
-            if forward:
-                poses[pid]["opacity"] = value
+        # Rewinding restores what the previous commit left, which the
+        # snapshot we started from already accounts for.
+        if pid in poses and forward:
+            poses[pid]["opacity"] = value
 
 
 def _copy_poses(poses: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:

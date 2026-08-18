@@ -171,10 +171,10 @@ def matrix_error(a: np.ndarray, b: np.ndarray) -> float:
 
 
 __all__ = [
-    "to_git",
-    "to_lite",
-    "round_trip_error",
-    "matrix_error",
     "compose",
     "decompose",
+    "matrix_error",
+    "round_trip_error",
+    "to_git",
+    "to_lite",
 ]
