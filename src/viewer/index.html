@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ETU Viewer</title>
+<style>
+  :root {
+    --bg: #111317;
+    --panel: #1a1d23e0;
+    --line: #2b2f38;
+    --fg: #dfe3ea;
+    --dim: #868e9c;
+    --accent: #4ea1ff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font: 13px/1.4 ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+  }
+  /* The canvas is appended by main.js and must sit under every panel. */
+  canvas { position: fixed; inset: 0; display: block; }
+
+  .panel {
+    position: fixed; z-index: 2;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; backdrop-filter: blur(6px);
+  }
+
+  #top { top: 10px; left: 10px; right: 10px; padding: 8px 12px;
+         display: flex; align-items: center; gap: 14px; }
+  #title { font-weight: 600; }
+  #counter { color: var(--dim); font-variant-numeric: tabular-nums; }
+  #event { margin-left: auto; color: var(--accent); }
+
+  #left { top: 62px; left: 10px; width: 190px; padding: 10px 12px; max-height: 55vh; overflow: auto; }
+  #left h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: .08em;
+             text-transform: uppercase; color: var(--dim); }
+  #layers label { display: flex; align-items: center; gap: 7px; padding: 3px 0; cursor: pointer; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+
+  #bottom { bottom: 10px; left: 10px; right: 10px; padding: 10px 12px;
+            display: flex; align-items: center; gap: 10px; }
+  #seek { flex: 1; accent-color: var(--accent); }
+  button, .filebtn {
+    background: #22262e; color: var(--fg); border: 1px solid var(--line);
+    border-radius: 6px; padding: 5px 11px; font: inherit; cursor: pointer;
+  }
+  button:hover, .filebtn:hover { border-color: var(--accent); }
+  button.on { background: var(--accent); border-color: var(--accent); color: #05070a; }
+  #file { display: none; }
+
+  #media { right: 10px; bottom: 62px; width: 240px; padding: 8px; display: none; }
+  #media img, #media video { width: 100%; display: block; border-radius: 4px; }
+
+  #hint { position: fixed; z-index: 2; left: 50%; top: 50%; transform: translate(-50%,-50%);
+          color: var(--dim); text-align: center; pointer-events: none; }
+  #hint b { color: var(--fg); }
+</style>
+</head>
+<body>
+
+<div id="top" class="panel">
+  <span id="title">ETU Viewer</span>
+  <span id="counter">— / —</span>
+  <span id="event"></span>
+</div>
+
+<div id="left" class="panel">
+  <h2>Layers</h2>
+  <div id="layers"></div>
+</div>
+
+<div id="media" class="panel"></div>
+
+<div id="bottom" class="panel">
+  <button id="play">Play</button>
+  <button id="rev">Reverse</button>
+  <input id="seek" type="range" min="0" max="0" value="0" step="1">
+  <label class="filebtn" for="file">Open…</label>
+  <input id="file" type="file" accept=".json,application/json">
+</div>
+
+<div id="hint">
+  Drop an <b>.mmi.json</b> scene here, use <b>Open…</b>, or append <b>?file=scene.json</b><br>
+  drag = orbit · scroll = zoom · space = play/pause · ←/→ = step
+</div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.169.0/examples/jsm/controls/OrbitControls.js"
+} }
+</script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

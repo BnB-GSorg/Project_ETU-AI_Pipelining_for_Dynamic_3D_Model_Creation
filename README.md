@@ -34,7 +34,18 @@ The previous implementation is retired. It was too complex to read and
 maintain, so the rewrite prioritises simplicity: readable beats clever, and no
 abstraction arrives before a second caller needs it.
 
-Built so far: both scene formats, fully tested.
+The engine is **operation-driven**: it builds an exact model of a known object,
+looks up what operations that object supports, turns a written instruction into
+a sequence of them, and records each step as a commit.
+
+```
+video ──► vision ──► state ──┐
+                             ├──► model ──► operations ──► commits ──► .mmi ──► viewer
+text instruction ──► brain ──┘         ▲
+                                 knowledge base
+```
+
+Built so far:
 
 - **mmi-lite** (`etu/formats/scene.py`) — a scene as objects, each with a
   geometry (point cloud, box, surface, or line) and a sparse keyframe track;
@@ -48,24 +59,44 @@ Built so far: both scene formats, fully tested.
   both directions, carrying position, rotation, scale, and opacity.
 - **Validator** (`etu/formats/validate.py`) — detects which of the two
   formats a file is from its own contents and validates accordingly.
+- **Knowledge base** (`etu/kb/`) — what an object is, what operations it
+  supports, and what "finished" looks like. `rubiks.py` builds an exact 26‑cubie
+  cube with correct face colours and knows what each of the 18 moves does.
+- **Operations** (`etu/ops/`) — applies a move to the model and records it as a
+  commit; runs a whole sequence and collects the chain.
+- **Brain** (`etu/brain/`) — `plan.py` turns an instruction into operations
+  (reading it literally, recognising an intent like "solve it", or asking a
+  model that may only answer with catalogue moves); `llm.py` talks to seven
+  providers through one `chat()`.
+- **Vision** (`etu/vision/cv.py`) — deterministic OpenCV: finds the object and
+  reads its colours to recognise the concept.
+- **Viewer** (`viewer/`) — no-build Three.js: orbit, zoom, scrub, play forward
+  and backward, toggle layers.
 
-Not yet built: the CV/LLM understanding pipeline, the CLI commands, and the
-viewer — see `src/tests/` for what currently has coverage.
+Not yet built: reading a full cube state from video (a single view never shows
+all six faces, so the scramble is supplied instead), and a general solver —
+today "solve" means undoing a known scramble.
 
 ## 📁 Layout
 
 ```
 Project-ETU/
 ├── src/                      # The engine — all development happens here
-│   ├── main.py               #   entry point + command loop
-│   ├── lib.py                #   utility helpers + file registry
+│   ├── main.py               #   the command hub
+│   ├── lib.py                #   shared paths, file registry, terminal I/O
 │   ├── etu/
+│   │   ├── model.py          #   a model: its parts and where they sit
+│   │   ├── kb/               #   concepts, properties, operation catalogues
+│   │   ├── ops/              #   apply operations, record commits
+│   │   ├── brain/            #   instruction planning + LLM providers
+│   │   ├── vision/           #   deterministic CV over video frames
 │   │   └── formats/
 │   │       ├── scene.py      #   mmi-lite
 │   │       ├── git.py        #   mmi-git v0.3
-│   │       ├── compiler.py   #   mmi-lite <-> mmi-git
+│   │       ├── compiler.py   #   operations/mmi-lite -> mmi-git
 │   │       └── validate.py   #   format auto-detect + validation
-│   └── tests/                #   pytest suite for the above
+│   ├── viewer/               #   no-build Three.js player
+│   └── tests/                #   pytest suite
 ├── environment.yml           # Python dependency spec
 ├── AGENTS.md                 # Working agreement, also read by AI coding agents
 └── README.md
@@ -82,13 +113,29 @@ settings. It is not committed — `environment.yml` is all you need to rebuild.
 # Create the environment (once)
 mamba env create --prefix .env/Python/etu -f environment.yml
 
-# Run it
+# Watch the whole pipeline run, offline, with no API key
 cd src
-../.env/Python/etu/bin/python main.py           # interactive
-../.env/Python/etu/bin/python main.py version   # one-shot command
+../.env/Python/etu/bin/python main.py demo
+
+# Then view the result
+../.env/Python/etu/bin/python main.py serve
+# open the URL the demo printed
 ```
 
-Available commands: `help`, `files`, `version`, `exit`.
+| Command | What it does |
+|---------|--------------|
+| `demo` | The whole pipeline: scramble a cube, solve it, compile it, validate it |
+| `self-test` | Check everything works with no network and no API key |
+| `search <text>` | What the knowledge base knows about a concept |
+| `model <concept> --scramble "R U R'"` | Build a model and describe it |
+| `instruct "solve it" --history "R U"` | Turn an instruction into operations |
+| `execute --scramble S` | Run the operations, report the commits |
+| `compile --scramble S --out f.mmi` | Write a compiled `.mmi` file |
+| `validate <file>` | Check an mmi-lite or mmi-git file |
+| `watch <video.mp4>` | Look at a video and identify the object |
+| `serve` | Serve the project so the viewer can load files |
+
+Also `help`, `files`, `version`, `exit`.
 
 If mamba cannot write its package cache, prefix the create command with
 `CONDA_PKGS_DIRS=.env/Python/.pkgs`.

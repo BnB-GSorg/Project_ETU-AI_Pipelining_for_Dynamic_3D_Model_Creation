@@ -163,11 +163,14 @@ class Commit:
     t: int
     transforms: dict[str, list[float]] = field(default_factory=dict)
     opacity: dict[str, float] = field(default_factory=dict)
+    op: str = ""  # the operation that caused this change, e.g. a cube move
 
     def to_dict(self) -> dict[str, Any]:
         d: dict[str, Any] = {"t": self.t, "transforms": self.transforms}
         if self.opacity:
             d["opacity"] = self.opacity
+        if self.op:
+            d["op"] = self.op
         return d
 
     @staticmethod
@@ -178,6 +181,7 @@ class Commit:
                 k: [float(x) for x in v] for k, v in d.get("transforms", {}).items()
             },
             opacity={k: float(v) for k, v in d.get("opacity", {}).items()},
+            op=str(d.get("op", "")),
         )
 
     def matrix_for(self, part_id: str) -> np.ndarray:
@@ -211,12 +215,14 @@ class GitScene:
     fps: int = 30
     duration_frames: int = 1
     parts: list[Part] = field(default_factory=list)
+    initial: Snapshot | None = None
     commits: list[Commit] = field(default_factory=list)
     keyframes: list[Snapshot] = field(default_factory=list)
     final: Snapshot | None = None
     layers: list[dict[str, Any]] = field(default_factory=list)
     events: list[dict[str, Any]] = field(default_factory=list)
     source: str = "etu"
+    media: dict[str, Any] = field(default_factory=dict)
 
     # ── serialization ───────────────────────────────────────────────────
 
@@ -232,10 +238,14 @@ class GitScene:
                 "coordinate_system": "right-handed-y-up",
                 "events": self.events,
             },
-            "base": {"parts": [p.to_dict() for p in self.parts]},
+            "base": {
+                "parts": [p.to_dict() for p in self.parts],
+                "poses": self.initial.poses if self.initial else {},
+            },
             "commits": [c.to_dict() for c in self.commits],
             "keyframes": [k.to_dict() for k in self.keyframes],
             "final": self.final.to_dict() if self.final else None,
+            "media": self.media,
             "layers": self.layers,
         }
 
@@ -257,10 +267,13 @@ class GitScene:
             layers=list(d.get("layers", [])),
             events=list(meta.get("events", [])),
             source=str(meta.get("source", "etu")),
+            media=dict(d.get("media") or {}),
         )
 
         if "parts" in base:
             scene.parts = [Part.from_dict(p) for p in base["parts"]]
+            if base.get("poses"):
+                scene.initial = Snapshot(t=0, poses=dict(base["poses"]))
             scene.keyframes = [Snapshot.from_dict(k) for k in d.get("keyframes", [])]
             if d.get("final"):
                 scene.final = Snapshot.from_dict(d["final"])
@@ -322,11 +335,7 @@ class GitScene:
         return snaps
 
     def _replay_to(self, start: Snapshot | None, t: int) -> dict[str, dict[str, Any]]:
-        poses = (
-            _copy_poses(start.poses)
-            if start
-            else {p.id: default_pose() for p in self.parts}
-        )
+        poses = _copy_poses(start.poses) if start else self._base_poses()
         start_t = start.t if start else -1
         for commit in sorted(self.commits, key=lambda c: c.t):
             if commit.t <= start_t:
@@ -345,6 +354,13 @@ class GitScene:
                 break
             _apply(poses, commit, forward=False)
         return poses
+
+    def _base_poses(self) -> dict[str, dict[str, Any]]:
+        """Where every part starts, before any commit has been applied."""
+        start = _copy_poses(self.initial.poses) if self.initial else {}
+        for part in self.parts:
+            start.setdefault(part.id, default_pose())
+        return start
 
     def generate_keyframes(self, interval: int = SNAPSHOT_INTERVAL) -> list[Snapshot]:
         """Lay down periodic absolute snapshots so seeking stays cheap."""

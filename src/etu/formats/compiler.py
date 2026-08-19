@@ -8,6 +8,11 @@ and git -> lite exists, so a compiled file can be opened back up.
 
 from __future__ import annotations
 
+import base64
+import mimetypes
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
+
 import numpy as np
 
 from etu.formats.git import (
@@ -21,7 +26,72 @@ from etu.formats.git import (
 )
 from etu.formats.scene import Keyframe, Layer, Scene, SceneObject, sample_track
 
+if TYPE_CHECKING:
+    from etu.model import Model
+    from etu.ops.sequence import Execution
+
 TOLERANCE = 1e-9
+
+# Above this, the source video is referenced by path instead of inlined, so a
+# compiled file stays something you can open in a text editor.
+EMBED_LIMIT_BYTES = 4_000_000
+
+
+def from_execution(
+    model: Model,
+    execution: Execution,
+    title: str = "",
+    fps: int = 30,
+    layers: list[dict[str, Any]] | None = None,
+    video: str | Path | None = None,
+    poster: str | None = None,
+    snapshot_interval: int = 30,
+) -> GitScene:
+    """Compile a run of operations into mmi-git: the model, the moves, the result.
+
+    This is the operation-driven path. Nothing is inferred: the parts come
+    from the model as built, and the commits are exactly the ones the executor
+    recorded, so the file is a faithful log of what was done.
+    """
+    git = GitScene(
+        title=title or f"{model.concept or 'model'} run",
+        fps=fps,
+        duration_frames=execution.duration_frames,
+        parts=list(model.parts),
+        initial=execution.initial,
+        commits=list(execution.commits),
+        layers=list(layers or []),
+        events=list(execution.events),
+        source=f"operations:{model.concept or 'model'}",
+        media=media_block(video, poster),
+    )
+    git.generate_keyframes(snapshot_interval)
+    git.final = Snapshot(
+        t=execution.duration_frames - 1, poses=git.decode(execution.duration_frames - 1)
+    )
+    return git
+
+
+def media_block(
+    video: str | Path | None = None, poster: str | None = None
+) -> dict[str, Any]:
+    """The media the scene came from: the source clip, and a still of the result."""
+    block: dict[str, Any] = {"video": None, "poster": poster}
+    if video is None:
+        return block
+
+    path = Path(video)
+    if not path.exists():
+        block["video"] = str(video)  # a URL or a path we were handed; pass it through
+        return block
+
+    if path.stat().st_size <= EMBED_LIMIT_BYTES:
+        mime = mimetypes.guess_type(path.name)[0] or "video/mp4"
+        payload = base64.b64encode(path.read_bytes()).decode("ascii")
+        block["video"] = f"data:{mime};base64,{payload}"
+    else:
+        block["video"] = str(path)
+    return block
 
 
 def to_git(scene: Scene, snapshot_interval: int = 30) -> GitScene:
