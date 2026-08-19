@@ -18,6 +18,7 @@ import logging
 import shlex
 import sys
 from pathlib import Path
+from typing import ClassVar
 
 import lib
 from etu.brain import plan as planner
@@ -154,6 +155,16 @@ def cmd_serve(io, args):
     # The project root, not src/, because compiled files land in .env/demo/ and
     # a server rooted at src/ cannot reach outside itself.
     class Handler(http.server.SimpleHTTPRequestHandler):
+        # Compiled scenes are JSON. Saying so lets a browser show one directly
+        # instead of downloading it, and Safari refuses modules whose type is
+        # wrong, so the mapping is worth being explicit about.
+        extensions_map: ClassVar[dict[str, str]] = {
+            **http.server.SimpleHTTPRequestHandler.extensions_map,
+            ".mmi": "application/json",
+            ".js": "text/javascript",
+            ".mjs": "text/javascript",
+        }
+
         def __init__(self, *a, **kw):
             super().__init__(*a, directory=str(lib.ROOT), **kw)
 
