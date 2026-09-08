@@ -19,8 +19,6 @@ dependencies:
   # Runtime
   - python=3.12
   - numpy
-  - pillow
-  - wrapt        # decorators used by src/main.py
   - opencv       # deterministic CV for FeatureGraph extraction (imports as cv2)
 
   # Test + lint

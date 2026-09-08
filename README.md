@@ -140,33 +140,12 @@ Also `help`, `files`, `version`, `exit`.
 If mamba cannot write its package cache, prefix the create command with
 `CONDA_PKGS_DIRS=.env/Python/.pkgs`.
 
-### C++ Core
-
-```bash
-cd src
-
-# macOS / Linux
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-./build/etu_app
-
-# Windows (Visual Studio 2022)
-cmake -B build -G "Visual Studio 17 2022"
-cmake --build build --config Release
-build\Release\etu_app.exe
-```
-
 ## 💻 Requirements
-
-### C++ Core
-- **C++23 compiler**: GCC 13+, Clang 16+, MSVC 19.34+ (VS 2022 17.4+)
-- **CMake**: 3.25+
-- **Graphics**: DirectX 12 (Win), Metal (Mac), Vulkan, or OpenGL
 
 ### Python Engine
 - **Python**: 3.10+ (3.12 pinned in `environment.yml`)
 - **Package manager**: mamba 2.x or conda 26.x
-- **Dependencies**: numpy, pillow, wrapt — see `environment.yml`
+- **Dependencies**: numpy, opencv — see `environment.yml`
 
 ## 🛠 Development
 

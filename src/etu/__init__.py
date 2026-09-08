@@ -1,8 +1,9 @@
 """Project ETU — lift flat 2D process videos into interactive 3D/4D scenes.
 
-Two scene formats live under `etu.formats`: mmi-lite (per-object keyframe
-tracks, human-readable) and mmi-git (initial model + commit chain of 4x4
-deltas + final model). `etu.router` turns frames into one of them.
+An object is built from its concept and state, operations are planned from a
+user instruction, each operation is recorded as a commit, and the run is
+compiled to an mmi-git file (initial model + commit chain + final model).
+Scene formats live under `etu.formats`; the command hub is `main.py`.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
