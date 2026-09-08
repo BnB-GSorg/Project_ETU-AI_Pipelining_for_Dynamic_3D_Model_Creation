@@ -47,30 +47,30 @@ text instruction ──► brain ──┘         ▲
 
 Built so far:
 
-- **mmi-lite** (`etu/formats/scene.py`) — a scene as objects, each with a
+- **mmi-lite** (`assets/lib/etu/formats/scene.py`) — a scene as objects, each with a
   geometry (point cloud, box, surface, or line) and a sparse keyframe track;
   the viewer interpolates between keyframes (position/scale/opacity lerp,
   rotation slerp).
-- **mmi-git v0.3** (`etu/formats/git.py`) — the same scene stored as an
+- **mmi-git v0.3** (`assets/lib/etu/formats/git.py`) — the same scene stored as an
   initial model, a chain of per-frame commits (a 4×4 pose delta per part),
   and a final model, so it plays back forward *and* backward without
   replaying from frame 0 every time. Reads v0.1/v0.2 files too.
-- **Compiler** (`etu/formats/compiler.py`) — converts mmi-lite ⇄ mmi-git in
+- **Compiler** (`assets/lib/etu/formats/compiler.py`) — converts mmi-lite ⇄ mmi-git in
   both directions, carrying position, rotation, scale, and opacity.
-- **Validator** (`etu/formats/validate.py`) — detects which of the two
+- **Validator** (`assets/lib/etu/formats/validate.py`) — detects which of the two
   formats a file is from its own contents and validates accordingly.
-- **Knowledge base** (`etu/kb/`) — what an object is, what operations it
+- **Knowledge base** (`assets/lib/etu/kb/`) — what an object is, what operations it
   supports, and what "finished" looks like. `rubiks.py` builds an exact 26‑cubie
   cube with correct face colours and knows what each of the 18 moves does.
-- **Operations** (`etu/ops/`) — applies a move to the model and records it as a
+- **Operations** (`assets/lib/etu/ops/`) — applies a move to the model and records it as a
   commit; runs a whole sequence and collects the chain.
-- **Brain** (`etu/brain/`) — `plan.py` turns an instruction into operations
+- **Brain** (`assets/lib/etu/brain/`) — `plan.py` turns an instruction into operations
   (reading it literally, recognising an intent like "solve it", or asking a
   model that may only answer with catalogue moves); `llm.py` talks to seven
   providers through one `chat()`.
-- **Vision** (`etu/vision/cv.py`) — deterministic OpenCV: finds the object and
+- **Vision** (`assets/lib/etu/vision/cv.py`) — deterministic OpenCV: finds the object and
   reads its colours to recognise the concept.
-- **Viewer** (`viewer/`) — no-build Three.js: orbit, zoom, scrub, play forward
+- **Viewer** (`assets/demo/viewer/`) — no-build Three.js: orbit, zoom, scrub, play forward
   and backward, toggle layers.
 
 Not yet built: reading a full cube state from video (a single view never shows
@@ -84,25 +84,29 @@ Project-ETU/
 ├── src/                      # The engine — all development happens here
 │   ├── main.py               #   the command hub
 │   ├── lib.py                #   shared paths, file registry, terminal I/O
-│   ├── etu/
-│   │   ├── model.py          #   a model: its parts and where they sit
-│   │   ├── kb/               #   concepts, properties, operation catalogues
-│   │   ├── ops/              #   apply operations, record commits
-│   │   ├── brain/            #   instruction planning + LLM providers
-│   │   ├── vision/           #   deterministic CV over video frames
-│   │   └── formats/
-│   │       ├── scene.py      #   mmi-lite
-│   │       ├── git.py        #   mmi-git v0.3
-│   │       ├── compiler.py   #   operations/mmi-lite -> mmi-git
-│   │       └── validate.py   #   format auto-detect + validation
-│   ├── viewer/               #   no-build Three.js player
-│   └── tests/                #   pytest suite
+│   ├── assets/
+│   │   ├── lib/etu/
+│   │   │   ├── model.py      #     a model: its parts and where they sit
+│   │   │   ├── kb/           #     concepts, properties, operation catalogues
+│   │   │   ├── ops/          #     apply operations, record commits
+│   │   │   ├── brain/        #     instruction planning + LLM providers
+│   │   │   ├── vision/       #     deterministic CV over video frames
+│   │   │   └── formats/
+│   │   │       ├── scene.py  #       mmi-lite
+│   │   │       ├── git.py    #       mmi-git v0.3
+│   │   │       ├── compiler.py #     operations/mmi-lite -> mmi-git
+│   │   │       └── validate.py #     format auto-detect + validation
+│   │   ├── test/             #   pytest suite + pytest.ini
+│   │   ├── demo/             #   viewer/ and demo outputs (out/)
+│   │   └── bin/              #   README badge images
+│   ├── .env/                 #   local toolchain (never committed)
+│   └── .agents/              #   local agent skills and dev docs (never committed)
 ├── environment.yml           # Python dependency spec
 ├── AGENTS.md                 # Working agreement, also read by AI coding agents
 └── README.md
 ```
 
-A local `.env/` directory holds the built Python environment and editor
+A local `src/.env/` directory holds the built Python environment and editor
 settings. It is not committed — `environment.yml` is all you need to rebuild.
 
 ## 🚀 Quick Start
@@ -111,14 +115,13 @@ settings. It is not committed — `environment.yml` is all you need to rebuild.
 
 ```bash
 # Create the environment (once)
-mamba env create --prefix .env/Python/etu -f environment.yml
+mamba env create --prefix src/.env/Python/etu -f environment.yml
 
 # Watch the whole pipeline run, offline, with no API key
-cd src
-../.env/Python/etu/bin/python main.py demo
+src/.env/Python/etu/bin/python src/main.py demo
 
 # Then view the result
-../.env/Python/etu/bin/python main.py serve
+src/.env/Python/etu/bin/python src/main.py serve
 # open the URL the demo printed
 ```
 
@@ -138,7 +141,7 @@ cd src
 Also `help`, `files`, `version`, `exit`.
 
 If mamba cannot write its package cache, prefix the create command with
-`CONDA_PKGS_DIRS=.env/Python/.pkgs`.
+`CONDA_PKGS_DIRS=src/.env/Python/.pkgs`.
 
 ## 💻 Requirements
 
@@ -151,11 +154,11 @@ If mamba cannot write its package cache, prefix the create command with
 
 | Action | Command |
 |--------|---------|
-| Run | `cd src && ../.env/Python/etu/bin/python main.py` |
-| Test | `.env/Python/etu/bin/pytest src/` |
-| Lint | `.env/Python/etu/bin/ruff check src/` |
-| Format | `BLACK_CACHE_DIR=/tmp/etu-black .env/Python/etu/bin/black src/` |
-| Add a dependency | edit `environment.yml`, then `mamba env update --prefix .env/Python/etu -f environment.yml --prune` |
+| Run | `src/.env/Python/etu/bin/python src/main.py` |
+| Test | `src/.env/Python/etu/bin/pytest src/assets/test` |
+| Lint | `src/.env/Python/etu/bin/ruff check src/` |
+| Format | `BLACK_CACHE_DIR=/tmp/etu-black src/.env/Python/etu/bin/black src/` |
+| Add a dependency | edit `environment.yml`, then `mamba env update --prefix src/.env/Python/etu -f environment.yml --prune` |
 
 `environment.yml` is the single source of truth — never install packages ad hoc.
 
@@ -192,11 +195,11 @@ Please read the AGENTS.md files in each directory for coding guidelines.
     <img alt="C/C++" src="https://img.shields.io/badge/C/C++-00599C?style=for-the-badge&logo=c&logoColor=white" /><br>
     <img alt="Python" src="https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" />
   </td>
-  <td align="center"><img height="60" alt="PyTorch" src="src/bin/pytorch.svg" /></td>
-  <td align="center"><img height="60" alt="NumPy" src="src/bin/numpy.png" /></td>
-  <td align="center"><img height="60" alt="SciPy" src="src/bin/scipy.svg" /></td>
-  <td align="center"><img height="60" alt="SymPy" src="src/bin/sympy.png" /></td>
-  <td align="center"><img height="60" alt="ONNX" src="src/bin/onnx.svg" /></td>
+  <td align="center"><img height="60" alt="PyTorch" src="src/assets/bin/images/pytorch.svg" /></td>
+  <td align="center"><img height="60" alt="NumPy" src="src/assets/bin/images/numpy.png" /></td>
+  <td align="center"><img height="60" alt="SciPy" src="src/assets/bin/images/scipy.svg" /></td>
+  <td align="center"><img height="60" alt="SymPy" src="src/assets/bin/images/sympy.png" /></td>
+  <td align="center"><img height="60" alt="ONNX" src="src/assets/bin/images/onnx.svg" /></td>
 </tr>
 <tr>
   <td align="center"><sub><b>PyTorch</b></sub></td>

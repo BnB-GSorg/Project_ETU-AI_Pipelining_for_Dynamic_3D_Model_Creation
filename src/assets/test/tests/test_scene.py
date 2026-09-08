@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from etu.formats.scene import (
     Box,
     Keyframe,

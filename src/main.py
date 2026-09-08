@@ -20,7 +20,11 @@ import sys
 from pathlib import Path
 from typing import ClassVar
 
-import lib
+# The engine library lives under assets/lib. Put it on the import path before
+# any `etu` import — an import-sorting hook keeps `import lib` at the bottom of
+# this block, so lib.py's own insert is not enough at startup.
+sys.path.insert(0, str(Path(__file__).resolve().parent / "assets" / "lib"))
+
 from etu.brain import plan as planner
 from etu.formats import compiler
 from etu.formats.validate import validate_file
@@ -28,13 +32,16 @@ from etu.kb import database, rubiks
 from etu.ops import sequence
 from etu.vision import cv
 
+import lib
+
 VERSION = "0.3.0"
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 log = logging.getLogger("etu")
 
-OUT_DIR = lib.ROOT / ".env" / "demo"
-VIEWER_URL = "http://localhost:{port}/src/viewer/"
+OUT_DIR = lib.SRC / "assets" / "demo" / "out"
+VIEWER_DIR = "src/assets/demo/viewer"
+VIEWER_URL = "http://localhost:{port}/src/assets/demo/viewer/"
 
 
 # ── commands ────────────────────────────────────────────────────────────
@@ -359,11 +366,14 @@ def _flags(args):
 def _viewer_link(path, port=8000):
     """The URL that opens the viewer on a compiled file.
 
-    The viewer page lives at /src/viewer/, so a file elsewhere in the project
-    is reached by climbing back out of those two directories.
+    The viewer page lives at /src/assets/demo/viewer/, so the link climbs back
+    out of those directories to reach the file, relative to the viewer page.
     """
+    import posixpath
+
     relative = Path(path).resolve().relative_to(lib.ROOT.resolve()).as_posix()
-    return f"{VIEWER_URL.format(port=port)}?file=../../{relative}"
+    from_viewer = posixpath.relpath(relative, VIEWER_DIR)
+    return f"{VIEWER_URL.format(port=port)}?file={from_viewer}"
 
 
 COMMANDS = {

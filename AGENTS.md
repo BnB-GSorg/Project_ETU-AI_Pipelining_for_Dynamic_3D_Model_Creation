@@ -12,16 +12,25 @@ implementation lives in `ARCHIVED/` as reference only.
 
 ```
 Project-ETU/
-├── src/              # The new engine — all development happens here
-├── environment.yml   # Python dependency spec (tracked — single source of truth)
-├── .env/             # Local toolchain (never committed)
-│   ├── Python/etu/   #   the built mamba environment
-│   └── Zed/          #   editor settings, surfaced via a .zed symlink
-├── .agents/skills/   # Project agent skills (local only)
-├── ARCHIVED/         # Previous engine — READ ONLY reference
+├── src/                 # The new engine — all development happens here
+│   ├── main.py          #   the command hub (demo, compile, serve, ...)
+│   ├── lib.py           #   shared paths, file registry, terminal I/O
+│   ├── assets/
+│   │   ├── lib/etu/     #   the engine library (formats, kb, ops, brain, vision)
+│   │   ├── test/        #   pytest suite + pytest.ini
+│   │   ├── demo/        #   viewer/ and generated demo outputs (out/)
+│   │   └── bin/         #   README badge images
+│   ├── .env/            #   Local toolchain (never committed)
+│   │   ├── Python/etu/  #     the built mamba environment
+│   │   └── Zed/         #     editor settings, surfaced via a .zed symlink
+│   └── .agents/         #   Local agent infrastructure (never committed)
+│       ├── skills/      #     project agent skills
+│       └── dev/         #     PLAN.md, PROGRESS.md, agent profiles
+├── environment.yml      # Python dependency spec (tracked — single source of truth)
+├── ARCHIVED/            # Previous engine — READ ONLY reference
 ├── AGENTS.md
 ├── README.md
-└── WIKI.md           # Deep technical reference (local only)
+└── WIKI.md              # Deep technical reference (local only)
 ```
 
 Only `src/`, `environment.yml`, `AGENTS.md`, `README.md` and `.gitignore` are
@@ -31,22 +40,19 @@ tracked. Everything else is intentionally local.
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| Python | 3.12.13 | mamba env at `.env/Python/etu` — not a venv |
-| clang / clang++ | 22.1.4 | Homebrew |
-| CMake / Ninja | 4.3.4 / 1.13.2 | build into `.env/build`, never `src/build` |
-| ffmpeg | 8.1 | frame extraction |
+| Python | 3.12.14 | mamba env at `src/.env/Python/etu` — not a venv |
+| ffmpeg | 8.1 | frame extraction for the `watch` command |
 
 ## Commands
 
 | Action | Command |
 |--------|---------|
-| Python | `.env/Python/etu/bin/python` |
-| Test | `.env/Python/etu/bin/pytest src/` |
-| Lint | `.env/Python/etu/bin/ruff check src/` |
-| Format | `BLACK_CACHE_DIR=/tmp/etu-black .env/Python/etu/bin/black src/` |
-| Update deps | `mamba env update --prefix .env/Python/etu -f environment.yml --prune` |
-| Activate | `conda activate ./.env/Python/etu` |
-| Build C++ | `cmake -S src -B .env/build -G Ninja && cmake --build .env/build` |
+| Python | `src/.env/Python/etu/bin/python` |
+| Test | `src/.env/Python/etu/bin/pytest src/assets/test` |
+| Lint | `src/.env/Python/etu/bin/ruff check src/` |
+| Format | `BLACK_CACHE_DIR=/tmp/etu-black src/.env/Python/etu/bin/black src/` |
+| Update deps | `mamba env update --prefix src/.env/Python/etu -f environment.yml --prune` |
+| Activate | `conda activate ./src/.env/Python/etu` |
 
 Add dependencies by editing `environment.yml` and re-running the update command
 — never install ad hoc.
@@ -55,12 +61,12 @@ Add dependencies by editing `environment.yml` and re-running the update command
 
 | Symptom | Fix |
 |---------|-----|
-| mamba: `Could not find any writable cache directory` | prefix with `CONDA_PKGS_DIRS=.env/Python/.pkgs` |
+| mamba: `Could not find any writable cache directory` | prefix with `CONDA_PKGS_DIRS=src/.env/Python/.pkgs` |
 | black: `OSError: AF_UNIX path too long` | prefix with `BLACK_CACHE_DIR=/tmp/etu-black` |
 
 ## Skills
 
-Three project skills live in `.agents/skills/`:
+Three project skills live in `src/.agents/skills/`:
 
 | Skill | Use it when |
 |-------|-------------|
@@ -70,14 +76,14 @@ Three project skills live in `.agents/skills/`:
 
 ## Hard rules
 
-1. **Never edit `ARCHIVED/` or `demo/`.** They are frozen reference.
+1. **Never edit `ARCHIVED/`.** It is frozen reference.
 2. **Never copy code out of `ARCHIVED/` into `src/`.** Read it, understand the
    idea, write a simpler version.
-3. **Never commit ignored paths.** `.env/`, `ARCHIVED/`, `demo/`, `.agents/`
-   and `WIKI.md` are local. Check `git --no-optional-locks status --short`
-   before every commit, and never `git add -f` an ignored path.
+3. **Never commit ignored paths.** `src/.env/`, `src/.agents/`,
+   `src/assets/demo/out/`, `ARCHIVED/`, `cache/` and `WIKI.md` are local.
+   Check `git --no-optional-locks status --short` before every commit, and
+   never `git add -f` an ignored path.
 4. **Never claim tests or builds pass without running them** and showing output.
-5. **Build out of tree** — `.env/build`, never inside `src/`.
 
 ## Simplicity is the priority
 
@@ -95,9 +101,9 @@ Comments explain *why*.
 | Preference | Setting |
 |------------|---------|
 | Maintainer | @dubo651 (BnB-GSorg) |
-| Primary languages | C++23 (engine), Python 3.12 (tooling) |
+| Primary language | Python 3.12 (engine + tooling) |
 | Coding style | Pragmatic, minimal, readable — simplicity over cleverness |
-| Testing | Run before claiming done; pytest + ctest |
+| Testing | Run before claiming done; pytest |
 | Current phase | Ground-up rewrite in `src/`; debugging and rebasing branches |
 | Repository | `BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation` |
 

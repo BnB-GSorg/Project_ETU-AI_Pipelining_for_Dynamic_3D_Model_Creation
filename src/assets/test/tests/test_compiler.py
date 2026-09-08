@@ -11,7 +11,6 @@ from __future__ import annotations
 import math
 
 import pytest
-
 from etu.formats.compiler import round_trip_error, to_git, to_lite
 from etu.formats.scene import Keyframe, PointCloud, Scene, SceneObject
 

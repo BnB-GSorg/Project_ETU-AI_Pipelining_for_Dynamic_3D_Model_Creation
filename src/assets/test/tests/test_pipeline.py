@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 
 import pytest
-
 from etu.brain import plan as planner
 from etu.formats import compiler
 from etu.formats.validate import validate_dict, validate_file

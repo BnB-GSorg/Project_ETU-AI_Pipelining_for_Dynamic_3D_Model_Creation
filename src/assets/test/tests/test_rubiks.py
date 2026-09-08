@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from etu.kb import rubiks
 from etu.ops import sequence
 from etu.ops.executor import apply_move, snap

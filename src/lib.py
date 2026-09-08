@@ -3,30 +3,37 @@
 by MCHIGM — 20260812
 """
 
+import sys
 from pathlib import Path
 
 # Resolved from this file, so the engine works from any working directory.
 SRC = Path(__file__).resolve().parent
 ROOT = SRC.parent
 
+# The engine's library lives under assets/lib. Put it on the import path so
+# `import etu` works no matter where the interpreter is started from.
+LIB = SRC / "assets" / "lib"
+if str(LIB) not in sys.path:
+    sys.path.insert(0, str(LIB))
+
 # The modules that make up the engine, with a one-line description each.
 FILES = {
     "main.py": "Entry point — the command hub.",
     "lib.py": "Shared paths, file registry, terminal I/O (this file).",
-    "etu/model.py": "A model: its parts and where each one sits.",
-    "etu/formats/scene.py": "mmi-lite — objects with keyframe tracks.",
-    "etu/formats/git.py": "mmi-git v0.3 — base, commits, final, media.",
-    "etu/formats/compiler.py": "Compile a run of operations into mmi-git.",
-    "etu/formats/validate.py": "Validate either format.",
-    "etu/kb/database.py": "Concepts: properties, target state, operations.",
-    "etu/kb/rubiks.py": "The cube: geometry, colours, and what moves do.",
-    "etu/ops/executor.py": "Apply one operation, record it as a commit.",
-    "etu/ops/sequence.py": "Run a sequence, collect the commit chain.",
-    "etu/brain/llm.py": "Chat with a reasoning model — seven providers.",
-    "etu/brain/plan.py": "Instruction text to an operation plan.",
-    "etu/vision/cv.py": "Look at video frames, identify the object.",
-    "viewer/index.html": "The player: orbit, scrub, play both ways.",
-    "viewer/main.js": "Viewer logic — loads mmi-lite and mmi-git.",
+    "assets/lib/etu/model.py": "A model: its parts and where each one sits.",
+    "assets/lib/etu/formats/scene.py": "mmi-lite — objects with keyframe tracks.",
+    "assets/lib/etu/formats/git.py": "mmi-git v0.3 — base, commits, final, media.",
+    "assets/lib/etu/formats/compiler.py": "Compile a run of operations into mmi-git.",
+    "assets/lib/etu/formats/validate.py": "Validate either format.",
+    "assets/lib/etu/kb/database.py": "Concepts: properties, target state, operations.",
+    "assets/lib/etu/kb/rubiks.py": "The cube: geometry, colours, and what moves do.",
+    "assets/lib/etu/ops/executor.py": "Apply one operation, record it as a commit.",
+    "assets/lib/etu/ops/sequence.py": "Run a sequence, collect the commit chain.",
+    "assets/lib/etu/brain/llm.py": "Chat with a reasoning model — seven providers.",
+    "assets/lib/etu/brain/plan.py": "Instruction text to an operation plan.",
+    "assets/lib/etu/vision/cv.py": "Look at video frames, identify the object.",
+    "assets/demo/viewer/index.html": "The player: orbit, scrub, play both ways.",
+    "assets/demo/viewer/main.js": "Viewer logic — loads mmi-lite and mmi-git.",
 }
 
 
