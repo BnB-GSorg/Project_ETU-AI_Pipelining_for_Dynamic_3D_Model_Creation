@@ -11,7 +11,7 @@
 [![Company name](https://img.shields.io/badge/github-BnB_Org-pink.svg)](https://github.com/BnB-GSorg)
 [![GitHub REPO](https://img.shields.io/badge/github-MCHIGM.svg)](https://github.com/BnB-GSorg/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation)
 
-This repository is the official implementation of the paper **"AI Pipelining for Dynamic 3D Model Creation"**, accepted at **IEEE ICAIMS 2026 / IEEE Xplore, 2026**.
+This repository is the official implementation of the paper **"AI Pipelining for Dynamic 3D Model Creation"**, accepted at **...**.
 
 ---
 
@@ -177,8 +177,8 @@ If you use this work in your research, please cite:
 ```bibtex
 @inproceedings{etu2026,
   title={AI Pipelining for Dynamic 3D Model Creation},
-  author={BnB .Org, Junming HUANG},
-  booktitle={IEEE IICAIET},
+  author={Yueming CHEN, Junming HUANG},
+  booktitle={...},
   year={2026}
 }
 ```

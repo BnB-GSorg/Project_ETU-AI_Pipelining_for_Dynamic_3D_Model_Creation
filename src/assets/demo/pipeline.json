@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Project ETU — How the Engine Works",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "src/assets/demo/pipeline.html",
+    "views": [
+      {
+        "id": "demo-path",
+        "label": "The demo path",
+        "focus": ["hub", "kb", "cube", "plan", "run", "compile", "file", "validate", "viewer"],
+        "note": "One offline command turns a scrambled cube into a playable compiled file."
+      },
+      {
+        "id": "watch-path",
+        "label": "Video path",
+        "focus": ["hub", "vision", "kb"],
+        "note": "The watch command reads frames and recognises the concept by colour."
+      },
+      {
+        "id": "llm-path",
+        "label": "LLM path",
+        "focus": ["plan", "llm"],
+        "note": "When a provider is given, the planner may ask a model that can only answer with catalogue moves."
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "cli", "label": "User & Commands" },
+    { "id": "kb", "label": "Knowledge Base" },
+    { "id": "brain", "label": "Reasoning" },
+    { "id": "ops", "label": "Execution" },
+    { "id": "formats", "label": "Formats" }
+  ],
+  "phases": [
+    { "id": "invoke", "label": "Invoke", "fromCol": 0, "toCol": 1 },
+    { "id": "understand", "label": "Understand + run", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "emit", "label": "Compile + view", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "watch-path", "label": "Watch path", "lane": "cli", "fromCol": 1, "toCol": 2, "variant": "dashed" },
+    { "id": "llm-path", "label": "LLM path (optional)", "lane": "brain", "fromCol": 3, "toCol": 4, "variant": "dashed" }
+  ],
+  "mainPath": ["user", "hub", "kb", "cube", "plan", "run", "compile", "file", "validate", "viewer"],
+  "nodes": [
+    { "id": "user", "lane": "cli", "col": 0, "type": "external", "label": "User", "sublabel": "runs a command", "width": 120 },
+    { "id": "hub", "lane": "cli", "col": 1, "type": "backend", "label": "main.py", "sublabel": "command hub", "width": 120 },
+    { "id": "vision", "lane": "cli", "col": 2, "type": "backend", "label": "vision/cv.py", "sublabel": "frames → colour state", "width": 120 },
+    { "id": "viewer", "lane": "cli", "col": 5, "type": "frontend", "label": "Three.js viewer", "sublabel": "orbit · scrub · replay", "width": 120 },
+    { "id": "kb", "lane": "kb", "col": 1, "type": "database", "label": "kb/database.py", "sublabel": "properties · operations", "width": 120 },
+    { "id": "cube", "lane": "kb", "col": 2, "type": "backend", "label": "kb/rubiks.py", "sublabel": "26 cubies · face colours", "width": 120 },
+    { "id": "plan", "lane": "brain", "col": 3, "type": "backend", "label": "brain/plan.py", "sublabel": "instruction → ops", "width": 120 },
+    { "id": "llm", "lane": "brain", "col": 4, "type": "external", "label": "brain/llm.py", "sublabel": "7 providers", "width": 120 },
+    { "id": "run", "lane": "ops", "col": 3, "type": "backend", "label": "ops/sequence.py", "sublabel": "move = commit", "width": 120 },
+    { "id": "validate", "lane": "ops", "col": 5, "type": "backend", "label": "formats/validate.py", "sublabel": "auto-detect format", "width": 136 },
+    { "id": "compile", "lane": "formats", "col": 4, "type": "backend", "label": "formats/compiler.py", "sublabel": "→ mmi-git v0.3", "width": 136 },
+    { "id": "file", "lane": "formats", "col": 5, "type": "database", "label": ".mmi file", "sublabel": "base · final · commits", "width": 120 }
+  ],
+  "edges": [
+    { "id": "e-user-hub", "from": "user", "to": "hub" },
+    { "id": "e-hub-kb", "from": "hub", "to": "kb", "label": "concept name", "variant": "emphasis" },
+    { "id": "e-kb-cube", "from": "kb", "to": "cube", "label": "state + scramble" },
+    { "id": "e-cube-plan", "from": "cube", "to": "plan", "label": "model + history" },
+    { "id": "e-plan-run", "from": "plan", "to": "run", "label": "operations", "variant": "emphasis" },
+    { "id": "e-run-compile", "from": "run", "to": "compile", "label": "commits + final" },
+    { "id": "e-compile-file", "from": "compile", "to": "file", "label": "writes" },
+    { "id": "e-file-validate", "from": "file", "to": "validate", "label": "check contract" },
+    { "id": "e-validate-viewer", "from": "validate", "to": "viewer", "label": "serve → load", "variant": "emphasis" },
+    { "id": "e-hub-vision", "from": "hub", "to": "vision", "label": "watch: video", "variant": "dashed", "role": "branch" },
+    { "id": "e-vision-kb", "from": "vision", "to": "kb", "label": "object state", "variant": "dashed", "role": "branch" },
+    { "id": "e-plan-llm", "from": "plan", "to": "llm", "label": "ask with --provider", "variant": "dashed", "role": "branch" },
+    { "id": "e-llm-plan", "from": "llm", "to": "plan", "label": "catalogue moves", "variant": "dashed", "role": "return" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "The demo path",
+      "items": [
+        "One command: python src/main.py demo",
+        "Fully offline — no API keys, no network"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "The compiled file",
+      "items": [
+        "mmi-git v0.3 stores the initial and final model plus the commit chain",
+        "Playback works forward and backward from any keyframe"
+      ]
+    }
+  ]
+}
