@@ -1,0 +1,29 @@
+# Mirrors the README quick start: a clean machine + environment.yml + one
+# command. If this passes, the clone-to-test path in the README is still true.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create the etu environment from environment.yml
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-variant: Miniforge3
+          conda-solver: libmamba
+          activate-environment: etu
+          environment-file: environment.yml
+
+      - name: Lint
+        shell: bash -el {0}
+        run: ruff check src/
+
+      - name: Test
+        shell: bash -el {0}
+        run: pytest src/assets/test
