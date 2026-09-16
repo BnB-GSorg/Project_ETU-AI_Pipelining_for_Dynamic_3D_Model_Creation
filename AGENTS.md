@@ -18,7 +18,7 @@ Project-ETU/
 │   ├── assets/
 │   │   ├── lib/etu/     #   the engine library (formats, kb, ops, brain, vision)
 │   │   ├── test/        #   pytest suite + pytest.ini
-│   │   ├── demo/        #   viewer/ and generated demo outputs (out/)
+│   │   └── demo/        #   viewer/, pipeline diagrams, generated demo outputs (out/)
 │   │   └── bin/         #   README badge images
 │   ├── .env/            #   Local toolchain (never committed)
 │   │   ├── Python/etu/  #     the built mamba environment
@@ -33,8 +33,8 @@ Project-ETU/
 └── WIKI.md              # Deep technical reference (local only)
 ```
 
-Only `src/`, `environment.yml`, `AGENTS.md`, `README.md` and `.gitignore` are
-tracked. Everything else is intentionally local.
+Only `src/`, `.github/`, `environment.yml`, `AGENTS.md`, `README.md` and
+`.gitignore` are tracked. Everything else is intentionally local.
 
 ## Toolchain
 

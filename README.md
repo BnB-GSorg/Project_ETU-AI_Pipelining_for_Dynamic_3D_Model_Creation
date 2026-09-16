@@ -38,14 +38,12 @@ The engine is **operation-driven**: it builds an exact model of a known object,
 looks up what operations that object supports, turns a written instruction into
 a sequence of them, and records each step as a commit.
 
-```
-video ──► vision ──► state ──┐
-                             ├──► model ──► operations ──► commits ──► .mmi ──► viewer
-text instruction ──► brain ──┘         ▲
-                                 knowledge base
-```
+[![ETU pipeline overview](src/assets/demo/overview.png)](src/assets/demo/overview.html)
 
-Built so far:
+*Interactive version: open `src/assets/demo/overview.html` — pan, zoom, and
+follow the paths.*
+
+<!--Built so far:
 
 - **mmi-lite** (`assets/lib/etu/formats/scene.py`) — a scene as objects, each with a
   geometry (point cloud, box, surface, or line) and a sparse keyframe track;
@@ -75,7 +73,7 @@ Built so far:
 
 Not yet built: reading a full cube state from video (a single view never shows
 all six faces, so the scramble is supplied instead), and a general solver —
-today "solve" means undoing a known scramble.
+today "solve" means undoing a known scramble.-->
 
 ## 📁 Layout
 
@@ -97,7 +95,7 @@ Project-ETU/
 │   │   │       ├── compiler.py #     operations/mmi-lite -> mmi-git
 │   │   │       └── validate.py #     format auto-detect + validation
 │   │   ├── test/             #   pytest suite + pytest.ini
-│   │   ├── demo/             #   viewer/ and demo outputs (out/)
+│   │   └── demo/             #   viewer/, pipeline diagrams, demo outputs (out/)
 │   │   └── bin/              #   README badge images
 │   ├── .env/                 #   local toolchain (never committed)
 │   └── .agents/              #   local agent skills and dev docs (never committed)
@@ -189,23 +187,25 @@ Please read the AGENTS.md files in each directory for coding guidelines.
 
 ---
 
+## 📦 Built with
+
 <table>
 <tr>
-  <td rowspan="2" valign="middle">
-    <img alt="C/C++" src="https://img.shields.io/badge/C/C++-00599C?style=for-the-badge&logo=c&logoColor=white" /><br>
-    <img alt="Python" src="https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" />
-  </td>
-  <td align="center"><img height="60" alt="PyTorch" src="src/assets/bin/images/pytorch.svg" /></td>
-  <td align="center"><img height="60" alt="NumPy" src="src/assets/bin/images/numpy.png" /></td>
-  <td align="center"><img height="60" alt="SciPy" src="src/assets/bin/images/scipy.svg" /></td>
-  <td align="center"><img height="60" alt="SymPy" src="src/assets/bin/images/sympy.png" /></td>
-  <td align="center"><img height="60" alt="ONNX" src="src/assets/bin/images/onnx.svg" /></td>
+  <td align="center"><img height="60" alt="Python" src="src/assets/bin/images/python.svg" /></td>
+  <td align="center"><img height="60" alt="NumPy" src="src/assets/bin/images/numpy.svg" /></td>
+  <td align="center"><img height="60" alt="OpenCV" src="src/assets/bin/images/opencv.svg" /></td>
+  <td align="center"><img height="60" alt="pytest" src="src/assets/bin/images/pytest.svg" /></td>
+  <td align="center"><img height="60" alt="Ruff" src="src/assets/bin/images/ruff.svg" /></td>
+  <td align="center"><img height="60" alt="Black" src="src/assets/bin/images/black.svg" /></td>
+  <td align="center"><img height="60" alt="Three.js" src="src/assets/bin/images/threedotjs.svg" /></td>
 </tr>
 <tr>
-  <td align="center"><sub><b>PyTorch</b></sub></td>
+  <td align="center"><sub><b>Python</b></sub></td>
   <td align="center"><sub><b>NumPy</b></sub></td>
-  <td align="center"><sub><b>SciPy</b></sub></td>
-  <td align="center"><sub><b>SymPy</b></sub></td>
-  <td align="center"><sub><b>ONNX</b></sub></td>
+  <td align="center"><sub><b>OpenCV</b></sub></td>
+  <td align="center"><sub><b>pytest</b></sub></td>
+  <td align="center"><sub><b>Ruff</b></sub></td>
+  <td align="center"><sub><b>Black</b></sub></td>
+  <td align="center"><sub><b>Three.js</b></sub></td>
 </tr>
 </table>

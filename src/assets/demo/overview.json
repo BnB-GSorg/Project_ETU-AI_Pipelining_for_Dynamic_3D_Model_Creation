@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Project ETU — Pipeline Overview",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "src/assets/demo/overview.html",
+    "viewBox": [1080, 640]
+  },
+  "stages": [
+    { "label": "Perceive" },
+    { "label": "Understand" },
+    { "label": "Model" },
+    { "label": "Record" },
+    { "label": "View" }
+  ],
+  "nodes": [
+    { "id": "video", "type": "external", "label": "Video", "sublabel": "2D process footage", "tag": "input", "stage": 0, "row": 0 },
+    { "id": "text", "type": "external", "label": "Text instruction", "sublabel": "e.g. solve it", "tag": "input", "stage": 0, "row": 2 },
+    { "id": "vision", "type": "backend", "label": "Vision", "sublabel": "vision/cv.py", "stage": 1, "row": 0 },
+    { "id": "brain", "type": "backend", "label": "Brain", "sublabel": "brain/plan.py", "stage": 1, "row": 2 },
+    { "id": "state", "type": "backend", "label": "State", "sublabel": "object + colours", "stage": 2, "row": 0 },
+    { "id": "model", "type": "backend", "label": "Model", "sublabel": "parts + poses", "tag": "core", "stage": 2, "row": 1 },
+    { "id": "kb", "type": "database", "label": "Knowledge base", "sublabel": "kb/database.py", "tag": "facts", "stage": 2, "row": 2 },
+    { "id": "operations", "type": "backend", "label": "Operations", "sublabel": "ops/sequence.py", "stage": 3, "row": 1 },
+    { "id": "commits", "type": "backend", "label": "Commits", "sublabel": "per-frame pose deltas", "tag": "append-only", "stage": 3, "row": 2 },
+    { "id": "mmi", "type": "database", "label": ".mmi file", "sublabel": "base · final · commits", "tag": "compiled", "stage": 3, "row": 3 },
+    { "id": "viewer", "type": "frontend", "label": "Viewer", "sublabel": "Three.js", "tag": "interactive", "stage": 4, "row": 3 }
+  ],
+  "flows": [
+    { "id": "video-vision", "from": "video", "to": "vision", "label": "frames" },
+    { "id": "text-brain", "from": "text", "to": "brain", "label": "instruction" },
+    { "id": "vision-state", "from": "vision", "to": "state", "label": "object state" },
+    { "id": "state-model", "from": "state", "to": "model", "label": "snapshot", "labelDy": 24 },
+    { "id": "brain-model", "from": "brain", "to": "model", "label": "plan" },
+    { "id": "kb-model", "from": "kb", "to": "model", "label": "concepts · moves", "variant": "dashed" },
+    { "id": "model-operations", "from": "model", "to": "operations", "label": "model" },
+    { "id": "operations-commits", "from": "operations", "to": "commits", "label": "commit per move", "labelDy": 24 },
+    { "id": "commits-mmi", "from": "commits", "to": "mmi", "label": "commit chain", "labelDy": 24 },
+    { "id": "mmi-viewer", "from": "mmi", "to": "viewer", "label": "scene file" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Two inputs, one exact model",
+      "items": [
+        "Video passes through deterministic OpenCV vision; a written instruction passes through the brain",
+        "Both converge on a model built from the knowledge base — nothing is inferred"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Every move is a commit",
+      "items": [
+        "Operations record one commit per move — a per-frame pose delta",
+        "The compiled .mmi file replays forward and backward in the viewer"
+      ]
+    }
+  ]
+}
