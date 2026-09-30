@@ -34,6 +34,7 @@ FILES = {
     "assets/lib/etu/vision/cv.py": "Look at video frames, identify the object.",
     "assets/demo/viewer/index.html": "The player: orbit, scrub, play both ways.",
     "assets/demo/viewer/main.js": "Viewer logic — loads mmi-lite and mmi-git.",
+    "assets/demo/viewer/viewcube.js": "View box: click a face to snap the camera, drag to rotate.",
 }
 
 

@@ -39,10 +39,12 @@ jobs:
           # /workflow — the interactive pipeline diagram.
           cp src/assets/demo/overview.html _site/workflow/overview.html
 
-          # /example — the viewer playing the golden demo scene. The viewer
-          # needs both files; the scene is the byte-stable demo output.
+          # /example — the viewer playing the golden demo scene. main.js imports
+          # viewcube.js by relative path, so all three sit together; the scene
+          # is the byte-stable demo output.
           cp src/assets/demo/viewer/index.html _site/example/viewer.html
           cp src/assets/demo/viewer/main.js _site/example/main.js
+          cp src/assets/demo/viewer/viewcube.js _site/example/viewcube.js
           cp src/assets/test/golden/rubiks_solve.mmi _site/example/rubiks_solve.mmi
           printf '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=viewer.html?file=rubiks_solve.mmi"></head><body></body></html>' > _site/example/index.html
 

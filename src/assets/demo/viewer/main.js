@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+import { createViewCube } from './viewcube.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -23,6 +24,10 @@ controls.rotateSpeed = 2.5;
 controls.zoomSpeed = 1.2;
 controls.panSpeed = 0.8;
 controls.noPan = false;
+
+const viewcube = createViewCube($('viewbox'), camera, controls);
+// Grabbing the scene mid-flight should win over the animation, not fight it.
+renderer.domElement.addEventListener('pointerdown', viewcube.cancel);
 
 scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 1.1));
 const sun = new THREE.DirectionalLight(0xffffff, 1.3);
@@ -282,7 +287,9 @@ function tick(now) {
       setFrame(next);
     }
   }
+  viewcube.animate(now);    // moves the camera; the controls then derive its orientation
   controls.update();
+  viewcube.sync();          // so the cube copies the orientation of this frame, not the last
   renderer.render(scene, camera);
 }
 requestAnimationFrame(tick);
