@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -14,8 +14,15 @@ scene.background = new THREE.Color(0x111317);
 const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 5000);
 camera.position.set(6, 5, 8);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
+// Trackball rather than OrbitControls: OrbitControls clamps the polar angle
+// to 0..pi, so the camera can never pass over the poles to look at the
+// underside of a model. Trackball has no such clamp and rotates freely in
+// every direction, which is what "orbit the cube and see its bottom" needs.
+const controls = new TrackballControls(camera, renderer.domElement);
+controls.rotateSpeed = 2.5;
+controls.zoomSpeed = 1.2;
+controls.panSpeed = 0.8;
+controls.noPan = false;
 
 scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 1.1));
 const sun = new THREE.DirectionalLight(0xffffff, 1.3);
