@@ -1,3 +1,5 @@
+# Mirrors the README quick start: a clean machine + environment.yml + one
+# command. If this passes, the clone-to-test path in the README is still true.
 name: CI
 
 on:
