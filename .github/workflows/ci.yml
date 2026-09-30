@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create the pinned environment
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environment.yml
+          cache-environment: true
+
+      - name: Test
+        run: python -m pytest -c src/assets/test/pytest.ini src/assets/test -q
+
+      - name: Lint
+        run: ruff check src/
+
+      - name: Format check
+        run: black --check src/
+
+      - name: Self-test (offline pipeline)
+        run: python src/main.py self-test

@@ -16,12 +16,15 @@ channels:
   - conda-forge
 
 dependencies:
-  # Runtime
-  - python=3.12
-  - numpy
-  - opencv       # deterministic CV for FeatureGraph extraction (imports as cv2)
+  # Runtime — pinned to the exact versions the engine is developed against.
+  # Reproducibility note: the compiled .mmi output is byte-stable only if
+  # numpy/OpenBLAS stay on these pins (float results can shift otherwise).
+  - python=3.12.14
+  - numpy=2.5.3
+  - libopenblas=0.3.34   # the BLAS behind numpy; pinned for byte-stable output
+  - opencv=5.0.0     # deterministic CV for FeatureGraph extraction (imports as cv2)
 
   # Test + lint
-  - pytest
-  - ruff
-  - black
+  - pytest=9.1.1
+  - ruff=0.16.6
+  - black=26.5.1

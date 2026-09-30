@@ -48,14 +48,15 @@ tracked. Everything else is intentionally local.
 | Action | Command |
 |--------|---------|
 | Python | `src/.env/Python/etu/bin/python` |
-| Test | `src/.env/Python/etu/bin/pytest src/assets/test` |
+| Test | `src/.env/Python/etu/bin/python -m pytest -c src/assets/test/pytest.ini src/assets/test` |
 | Lint | `src/.env/Python/etu/bin/ruff check src/` |
 | Format | `BLACK_CACHE_DIR=/tmp/etu-black src/.env/Python/etu/bin/black src/` |
-| Update deps | `mamba env update --prefix src/.env/Python/etu -f environment.yml --prune` |
+| Update deps | `mamba env update --prefix src/.env/Python/etu -f environment.yml --prune`, then regenerate the lock with `conda env export -p src/.env/Python/etu --no-builds > environment.lock.yml` and commit both |
 | Activate | `conda activate ./src/.env/Python/etu` |
 
 Add dependencies by editing `environment.yml` and re-running the update command
-— never install ad hoc.
+— never install ad hoc. The test command uses `python -m pytest -c …`: the
+bare `pytest` script can fail with `Interrupted system call` on this machine.
 
 ### Two environment quirks, both caused by the long repository path
 
@@ -78,12 +79,16 @@ Three project skills live in `src/.agents/skills/`:
 
 1. **Never edit `ARCHIVED/`.** It is frozen reference.
 2. **Never copy code out of `ARCHIVED/` into `src/`.** Read it, understand the
-   idea, write a simpler version.
+idea, write a simpler version.
 3. **Never commit ignored paths.** `src/.env/`, `src/.agents/`,
-   `src/assets/demo/out/`, `ARCHIVED/`, `cache/` and `WIKI.md` are local.
-   Check `git --no-optional-locks status --short` before every commit, and
-   never `git add -f` an ignored path.
+`src/assets/demo/out/`, `ARCHIVED/`, `cache/` and `WIKI.md` are local.
+Check `git --no-optional-locks status --short` before every commit, and
+never `git add -f` an ignored path.
 4. **Never claim tests or builds pass without running them** and showing output.
+5. **The demo output is byte-stable.** `src/assets/test/tests/test_reproducibility.py`
+rebuilds the demo and compares it byte-for-byte against the golden file in
+`src/assets/test/golden/`. A failing golden test is a regression — fix the
+engine or the pinned environment, never update the golden file to pass.
 
 ## Simplicity is the priority
 

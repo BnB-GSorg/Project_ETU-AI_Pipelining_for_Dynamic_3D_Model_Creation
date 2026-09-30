@@ -38,11 +38,13 @@ The engine is **operation-driven**: it builds an exact model of a known object,
 looks up what operations that object supports, turns a written instruction into
 a sequence of them, and records each step as a commit.
 
-```
-video ──► vision ──► state ──┐
-                             ├──► model ──► operations ──► commits ──► .mmi ──► viewer
-text instruction ──► brain ──┘         ▲
-                                 knowledge base
+```mermaid
+flowchart LR
+    video[video] --> vision[vision] --> state[state] --> model[model]
+    instruction[text instruction] --> brain[brain] --> model
+    kb[knowledge base] --> model
+    kb[knowledge base] -->|operation catalogue| brain
+    model --> operations[operations] --> commits[commits] --> mmi[.mmi] --> viewer[viewer]
 ```
 
 Built so far:
@@ -115,7 +117,9 @@ settings. It is not committed — `environment.yml` is all you need to rebuild.
 
 ```bash
 # Create the environment (once)
-mamba env create --prefix src/.env/Python/etu -f environment.yml
+# Prefer the lock file: it reproduces the exact resolved environment.
+mamba env create --prefix src/.env/Python/etu -f environment.lock.yml
+# (or `-f environment.yml` for the pinned direct dependencies)
 
 # Watch the whole pipeline run, offline, with no API key
 src/.env/Python/etu/bin/python src/main.py demo
@@ -146,7 +150,7 @@ If mamba cannot write its package cache, prefix the create command with
 ## 💻 Requirements
 
 ### Python Engine
-- **Python**: 3.10+ (3.12 pinned in `environment.yml`)
+- **Python**: 3.12.14 (pinned in `environment.yml`; full resolved set in `environment.lock.yml`)
 - **Package manager**: mamba 2.x or conda 26.x
 - **Dependencies**: numpy, opencv — see `environment.yml`
 
@@ -161,6 +165,28 @@ If mamba cannot write its package cache, prefix the create command with
 | Add a dependency | edit `environment.yml`, then `mamba env update --prefix src/.env/Python/etu -f environment.yml --prune` |
 
 `environment.yml` is the single source of truth — never install packages ad hoc.
+
+## 🔁 Reproducibility
+
+The reference pipeline is reproducible by construction and by enforcement:
+
+- **Pinned environment** — `environment.yml` pins every direct dependency to
+  the exact version the engine is developed against (python 3.12.14, numpy
+  2.5.3, OpenBLAS 0.3.34, opencv 5.0.0, …). `environment.lock.yml` captures
+  the full resolved environment (all transitive packages), generated with
+  `conda env export --no-builds` and regenerated after every update.
+- **Deterministic output** — the offline pipeline uses no randomness and no
+  timestamps: `python src/main.py demo` produces byte-identical `.mmi` files
+  on every run.
+- **Golden-file test** — `src/assets/test/tests/test_reproducibility.py`
+  rebuilds the demo from scratch and compares it byte-for-byte against the
+  committed golden file in `src/assets/test/golden/`, so an engine regression
+  *or* a numerical-environment drift fails the suite.
+- **CI** — `.github/workflows/ci.yml` runs the tests, lint, format check, and
+  self-test on macOS and Linux on every push.
+
+> The LLM (`--provider`) path is deliberately excluded from this contract:
+> hosted models drift. The offline route is the reference path.
 
 > **Note:** `black` needs `BLACK_CACHE_DIR` set to a short path on macOS when the
 > repository lives under a long directory name, otherwise it aborts with
