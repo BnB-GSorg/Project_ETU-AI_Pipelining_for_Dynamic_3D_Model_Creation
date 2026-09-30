@@ -13,6 +13,11 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
+    # Every run step needs the created environment active, otherwise `python`
+    # resolves to the runner's system Python, which has none of the deps.
+    defaults:
+      run:
+        shell: micromamba-shell {0}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,6 +25,7 @@ jobs:
         uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: environment.yml
+          activate-environment: etu
           cache-environment: true
 
       - name: Test
