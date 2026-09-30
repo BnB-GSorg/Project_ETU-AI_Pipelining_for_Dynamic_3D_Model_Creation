@@ -15,7 +15,7 @@ This repository is the official implementation of the paper **"AI Pipelining for
 
 ---
 
-## 🎯 What it does
+## 🎯 About
 
 Turn a flat 2D process video into an interactive 4D scene — 3D geometry plus
 time — that you can orbit, scrub and slice.
@@ -26,19 +26,13 @@ best in 3D. ETU reads a 2D video and re-authors it as a scene you can look at
 from any angle, at any point in time. The output is a single scene file that a
 viewer can load, play and cut through.
 
-## 📌 Status
-
-The engine is being **rewritten from scratch** in `src/`.
-
-The previous implementation is retired. It was too complex to read and
-maintain, so the rewrite prioritises simplicity: readable beats clever, and no
-abstraction arrives before a second caller needs it.
+[Try the demo here!  ](https://bnb-gsorg.github.io/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/example/)
 
 The engine is **operation-driven**: it builds an exact model of a known object,
 looks up what operations that object supports, turns a written instruction into
 a sequence of them, and records each step as a commit.
 
-[![ETU pipeline overview](src/assets/demo/overview.png)](src/assets/demo/overview.html)
+[![ETU pipeline overview](src/assets/demo/overview.png)]([src/assets/demo/overview.html](https://bnb-gsorg.github.io/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/workflow/overview.html))
 
 *Interactive version: open `src/assets/demo/overview.html` — pan, zoom, and
 follow the paths.*
@@ -188,16 +182,25 @@ The reference pipeline is reproducible by construction and by enforcement:
 > repository lives under a long directory name, otherwise it aborts with
 > `OSError: AF_UNIX path too long`.
 
-## 📄 License
+## 📚 Acknowledgements
 
-MIT License - See [LICENSE](LICENSE) for details.
+Authors:
 
-## 📚 Citation
+1. Yueming CHEN
+2. Junming HUANG
+3. Pak Shing YAN
+4. Bicheng LUO (*)
+5. Qianru WANG (*)
+6. Yiu Kit LIU (*)
+
+###### \*: Equivalent contribution
+
+Licence: [MIT](LICENSE), 2026 BnB .corp all rights reserved.
 
 If you use this work in your research, please cite:
 
 ```bibtex
-@inproceedings{etu2026,
+@inproceedings{yourpreferredname,
   title={AI Pipelining for Dynamic 3D Model Creation},
   author={Yueming CHEN, Junming HUANG},
   booktitle={...},
