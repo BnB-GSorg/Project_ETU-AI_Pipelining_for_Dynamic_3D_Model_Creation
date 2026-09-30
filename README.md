@@ -215,21 +215,20 @@ Please read the AGENTS.md files in each directory for coding guidelines.
 
 <table>
 <tr>
-  <td align="center"><img height="60" alt="Python" src="src/assets/bin/images/python.svg" /></td>
-  <td align="center"><img height="60" alt="NumPy" src="src/assets/bin/images/numpy.svg" /></td>
-  <td align="center"><img height="60" alt="OpenCV" src="src/assets/bin/images/opencv.svg" /></td>
-  <td align="center"><img height="60" alt="pytest" src="src/assets/bin/images/pytest.svg" /></td>
-  <td align="center"><img height="60" alt="Ruff" src="src/assets/bin/images/ruff.svg" /></td>
-  <td align="center"><img height="60" alt="Black" src="src/assets/bin/images/black.svg" /></td>
-  <td align="center"><img height="60" alt="Three.js" src="src/assets/bin/images/threedotjs.svg" /></td>
+  <td align="center"><img height="75" alt="Python" src="src/assets/bin/images/python.svg" /></td>
+  <td align="center"><img height="75" alt="NumPy" src="src/assets/bin/images/numpy.svg" /></td>
+  <td align="center"><img height="75" alt="OpenCV" src="src/assets/bin/images/opencv.svg" /></td>
+  <td align="center"><img height="75" alt="3js" src="src/assets/bin/images/threedotjs.svg" /></td>
+  <td align="center"><img height="75" alt="Ruff" src="src/assets/bin/images/ruff.svg" /></td>
+  <td align="center"><img height="75" alt="C/C++" src="src/assets/bin/images/cpp.svg" /></td>
 </tr>
 <tr>
-  <td align="center"><sub><b>Python</b></sub></td>
+  <td align="center"><sub><b>Python</b>π</sub></td>
   <td align="center"><sub><b>NumPy</b></sub></td>
-  <td align="center"><sub><b>OpenCV</b></sub></td>
-  <td align="center"><sub><b>pytest</b></sub></td>
-  <td align="center"><sub><b>Ruff</b></sub></td>
-  <td align="center"><sub><b>Black</b></sub></td>
+  <td align="center"><sub><b>CV</b>2</sub></td>
   <td align="center"><sub><b>Three.js</b></sub></td>
+  <td align="center"><sub><b>Ruff</b></sub></td>
+  <td align="center"><sub><b>C/C++</b></sub></td>
+
 </tr>
 </table>
