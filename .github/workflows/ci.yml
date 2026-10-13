@@ -39,3 +39,6 @@ jobs:
 
       - name: Self-test (offline pipeline)
         run: python src/main.py self-test
+
+      - name: View-cube maths (Node, no browser)
+        run: node src/assets/demo/viewer/viewcube.test.mjs

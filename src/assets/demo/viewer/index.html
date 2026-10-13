@@ -68,10 +68,13 @@
              backface-visibility: hidden; }
   .vc-face:hover { background: var(--accent); color: #05070a; border-color: var(--accent); }
   .vc-home { padding: 3px 12px; font-size: 11px; }
-  .vc-handle { position: absolute; left: 50%; top: 50%; width: 12px; height: 12px;
-               margin: -6px 0 0 -6px; border-radius: 50%; cursor: pointer;
-               background: #2c313c; border: 1px solid #4a5060; }
-  .vc-handle:hover { background: var(--accent); border-color: var(--accent); }
+  .vc-handle { position: absolute; left: 50%; top: 50%; border-radius: 50%;
+               cursor: pointer; }
+  .vc-edge { width: 12px; height: 12px; margin: -6px 0 0 -6px;
+             background: #46536b; border: 1.5px solid #8b99b2; }
+  .vc-corner { width: 14px; height: 14px; margin: -7px 0 0 -7px;
+               background: #55617a; border: 2px solid #b3c2d9; }
+  .vc-handle:hover { background: var(--accent); border-color: #fff; }
 
   #media { right: 10px; bottom: 62px; width: 240px; padding: 8px; display: none; }
   #media img, #media video { width: 100%; display: block; border-radius: 4px; }
@@ -108,7 +111,7 @@
 
 <div id="hint">
   Drop a <b>.mmi</b> scene here, use <b>Open…</b>, or append <b>?file=scene.mmi</b><br>
-  drag = rotate · scroll = zoom · view box = click a face to snap, drag to rotate<br>
+  drag = rotate · scroll = zoom · view box = click a face, edge or corner to snap, drag to rotate<br>
   space = play/pause · ←/→ = step
 </div>
 

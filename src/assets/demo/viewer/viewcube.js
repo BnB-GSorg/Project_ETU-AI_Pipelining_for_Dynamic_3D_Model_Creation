@@ -5,7 +5,9 @@
 // The maths (orientationFor, cssMatrix, rotateView) is kept separate from the
 // DOM code so it can be checked without a browser.
 
-import * as THREE from 'three';
+// Relative so the maths can be checked under plain Node (viewcube.test.mjs);
+// the import map in index.html resolves the same file for main.js.
+import * as THREE from './three.module.js';
 
 const SIZE = 60;   // edge length of the cube in CSS pixels
 
@@ -145,12 +147,17 @@ export function createViewCube(container, camera, controls) {
     node.style.transform = face.place.replace('H', `${SIZE / 2}px`);
     cube.appendChild(node);
   }
-  for (const [name, dir] of [...Object.entries(EDGES), ...Object.entries(CORNERS)]) {
-    const node = el('div', 'vc-handle');
-    node.dataset.view = name;
-    node.style.transform = handlePlace(dir);
-    cube.appendChild(node);
-  }
+  const addHandles = (views, extra) => {
+    for (const [name, dir] of Object.entries(views)) {
+      const node = el('div', `vc-handle ${extra}`);
+      node.dataset.view = name;
+      node.title = name;
+      node.style.transform = handlePlace(dir);
+      cube.appendChild(node);
+    }
+  };
+  addHandles(EDGES, 'vc-edge');
+  addHandles(CORNERS, 'vc-corner');
   stage.appendChild(cube);
 
   const home = el('button', 'vc-home', 'Home');
