@@ -147,6 +147,7 @@ export function createViewCube(container, camera, controls) {
     node.style.transform = face.place.replace('H', `${SIZE / 2}px`);
     cube.appendChild(node);
   }
+  const handles = [];
   const addHandles = (views, extra) => {
     for (const [name, dir] of Object.entries(views)) {
       const node = el('div', `vc-handle ${extra}`);
@@ -154,6 +155,7 @@ export function createViewCube(container, camera, controls) {
       node.title = name;
       node.style.transform = handlePlace(dir);
       cube.appendChild(node);
+      handles.push({ node, dir });
     }
   };
   addHandles(EDGES, 'vc-edge');
@@ -189,8 +191,18 @@ export function createViewCube(container, camera, controls) {
 
   const cancel = () => { flight = null; };
 
+  const tmp = new THREE.Vector3();
   function sync() {
     cube.style.transform = cssMatrix(camera.quaternion);
+    // Show a handle only on the side facing the camera. The dir vectors use a
+    // Y-up model frame, but the cube's CSS transform renders Y-down, so flip Y
+    // before rotating by the (inverted) camera quaternion into world space.
+    const cam = new THREE.Vector3().subVectors(camera.position, controls.target);
+    const q = camera.quaternion.clone().invert();
+    for (const h of handles) {
+      tmp.set(h.dir[0], -h.dir[1], h.dir[2]).applyQuaternion(q);
+      h.node.style.visibility = tmp.dot(cam) > 0 ? 'visible' : 'hidden';
+    }
   }
 
   // A press that barely moves is a click on a face; anything more is a drag.
