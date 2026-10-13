@@ -12,22 +12,19 @@ The pipeline each command is a step of:
 Author: DuBoLEE, MCHIGM
 """
 
-"""
-
-Main
-
-Created: 2026-08-18
-
-Creator: MCHIGM
-
-Last modified: 2026-09-30, MCHIGM, ''
-
-CONTAINS AI-GENERATED CONTENTS
-
-"""
+# Main
+#
+# Created: 2026-08-18
+#
+# Creator: MCHIGM
+#
+# Last modified: 2026-09-30, MCHIGM, ''
+#
+# CONTAINS AI-GENERATED CONTENTS
 
 from __future__ import annotations
 
+import http.server
 import logging
 import shlex
 import sys
@@ -166,36 +163,42 @@ def cmd_validate(io, args):
         io.say(str(validate_file(name)))
 
 
+# The MIME types the viewer needs. Compiled scenes are JSON (so a browser
+# shows them instead of downloading), and Safari refuses ES modules whose
+# type is wrong, so `.js`/`.mjs` are explicit.
+SERVE_EXTENSIONS: dict[str, str] = {
+    ".mmi": "application/json",
+    ".js": "text/javascript",
+    ".mjs": "text/javascript",
+}
+
+
+class ViewerHandler(http.server.SimpleHTTPRequestHandler):
+    """Serve the project root with the viewer's MIME types."""
+
+    extensions_map: ClassVar[dict[str, str]] = {
+        **http.server.SimpleHTTPRequestHandler.extensions_map,
+        **SERVE_EXTENSIONS,
+    }
+
+    def __init__(self, *a, **kw):
+        # The project root, not src/, because compiled files land under
+        # assets/demo/out and a server rooted at src/ cannot reach outside.
+        super().__init__(*a, directory=str(lib.ROOT), **kw)
+
+    def log_message(self, *a):
+        pass  # the default handler logs every asset request; too noisy here
+
+
 def cmd_serve(io, args):
     """serve [--port 8000] — serve the project so the viewer can load files."""
-    import http.server
     import socketserver
 
     port = int((_flags(args)[0]).get("port", 8000))
-
-    # The project root, not src/, because compiled files land in .env/demo/ and
-    # a server rooted at src/ cannot reach outside itself.
-    class Handler(http.server.SimpleHTTPRequestHandler):
-        # Compiled scenes are JSON. Saying so lets a browser show one directly
-        # instead of downloading it, and Safari refuses modules whose type is
-        # wrong, so the mapping is worth being explicit about.
-        extensions_map: ClassVar[dict[str, str]] = {
-            **http.server.SimpleHTTPRequestHandler.extensions_map,
-            ".mmi": "application/json",
-            ".js": "text/javascript",
-            ".mjs": "text/javascript",
-        }
-
-        def __init__(self, *a, **kw):
-            super().__init__(*a, directory=str(lib.ROOT), **kw)
-
-        def log_message(self, *a):
-            pass  # the default handler logs every asset request; too noisy here
-
     io.say(f"serving {lib.ROOT} at {VIEWER_URL.format(port=port)}")
     io.say("ctrl-c to stop")
     try:
-        with socketserver.TCPServer(("", port), Handler) as httpd:
+        with socketserver.TCPServer(("", port), ViewerHandler) as httpd:
             httpd.serve_forever()
     except KeyboardInterrupt:
         io.say("\nstopped")

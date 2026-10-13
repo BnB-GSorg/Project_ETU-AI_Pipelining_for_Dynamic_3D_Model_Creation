@@ -108,10 +108,12 @@
   space = play/pause · ←/→ = step
 </div>
 
+<!-- Three.js is vendored (three@0.169.0) so the viewer runs offline and without
+     a third-party CDN, which Safari can block. See three.module.js and addons/. -->
 <script type="importmap">
 { "imports": {
-    "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+    "three": "./three.module.js",
+    "three/addons/": "./addons/"
 } }
 </script>
 <script type="module" src="./main.js"></script>

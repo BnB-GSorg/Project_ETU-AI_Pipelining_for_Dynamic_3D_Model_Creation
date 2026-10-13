@@ -46,6 +46,11 @@ jobs:
           cp src/assets/demo/viewer/main.js _site/example/main.js
           cp src/assets/demo/viewer/viewcube.js _site/example/viewcube.js
           cp src/assets/test/golden/rubiks_solve.mmi _site/example/rubiks_solve.mmi
+
+          # Vendored Three.js, referenced by the import map in index.html.
+          cp src/assets/demo/viewer/three.module.js _site/example/three.module.js
+          mkdir -p _site/example/addons/controls
+          cp src/assets/demo/viewer/addons/controls/TrackballControls.js _site/example/addons/controls/TrackballControls.js
           printf '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=viewer.html?file=rubiks_solve.mmi"></head><body></body></html>' > _site/example/index.html
 
           # Site root bounces to the diagram; the overview is fully
