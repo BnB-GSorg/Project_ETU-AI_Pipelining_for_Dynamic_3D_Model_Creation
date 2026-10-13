@@ -51,6 +51,8 @@ def test_serve_delivers_scene_and_vendored_three():
             body = resp.read().decode()
             assert '"./three.module.js"' in body
             assert '"three/addons/": "./addons/"' in body
+            # The Open… picker must admit .mmi scenes, not just .json.
+            assert 'accept=".mmi' in body
     finally:
         server.shutdown()
         server.server_close()
