@@ -87,7 +87,7 @@ export function orientationFor(name) {
  * CSS matrix3d is column-major.
  */
 export function cssMatrix(cameraQuaternion) {
-  const r = new THREE.Matrix4().makeRotationFromQuaternion(cameraQuaternion.clone().invert()).elements;
+  const r = new THREE.Matrix4().makeRotationFromQuaternion(cameraQuaternion.clone()).elements;
   const s = [1, -1, 1];
   const out = [];
   for (let col = 0; col < 3; col++) {
@@ -123,9 +123,11 @@ const el = (tag, cls, text) => {
 };
 
 // CSS grows +Y downward, so a world direction [x, y, z] becomes [x, -y, z].
+// Offset outward a few pixels so the handles float just above the faces:
+// otherwise they sit coplanar with a face and the face wins the click.
 const handlePlace = (dir) => {
   const [x, y, z] = dir;
-  const h = SIZE / 2;
+  const h = SIZE / 2 + 4;
   return `translate3d(${x * h}px, ${-y * h}px, ${z * h}px)`;
 };
 
@@ -194,13 +196,13 @@ export function createViewCube(container, camera, controls) {
   const tmp = new THREE.Vector3();
   function sync() {
     cube.style.transform = cssMatrix(camera.quaternion);
-    // Show a handle only on the side facing the camera. The dir vectors use a
-    // Y-up model frame, but the cube's CSS transform renders Y-down, so flip Y
-    // before rotating by the (inverted) camera quaternion into world space.
+    // Show a handle only on the side facing the camera: the cube's world
+    // rotation is the camera's own orientation, so rotate each handle's
+    // direction by the camera quaternion and compare with the camera offset.
     const cam = new THREE.Vector3().subVectors(camera.position, controls.target);
-    const q = camera.quaternion.clone().invert();
+    const q = camera.quaternion.clone();
     for (const h of handles) {
-      tmp.set(h.dir[0], -h.dir[1], h.dir[2]).applyQuaternion(q);
+      tmp.set(h.dir[0], h.dir[1], h.dir[2]).applyQuaternion(q);
       h.node.style.visibility = tmp.dot(cam) > 0 ? 'visible' : 'hidden';
     }
   }
