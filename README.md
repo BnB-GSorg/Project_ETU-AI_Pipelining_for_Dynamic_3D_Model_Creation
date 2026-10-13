@@ -139,6 +139,10 @@ Also `help`, `files`, `version`, `exit`.
 If mamba cannot write its package cache, prefix the create command with
 `CONDA_PKGS_DIRS=src/.env/Python/.pkgs`.
 
+If `serve` reports `[Errno 48] Address already in use`, a previous server is
+still holding the port. Free it first (`lsof -ti:8000 | xargs kill`) or serve
+on another port (`python src/main.py serve --port 8080`).
+
 For detailed instruction about using this  <!-- REPO, please either look at the WIKI or the AI agents -->
 
 ## 💻 Requirements
