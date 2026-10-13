@@ -23,6 +23,39 @@ export const VIEWS = {
   home:   { dir: [0.7, 0.6, 1],   up: [0, 1, 0] },
 };
 
+// Edge and corner views, so the cube snaps to the full CAD set, not just the
+// six faces. An edge direction has one zero component, a corner has none;
+// none of them point straight along Y, so world-up is always a valid up.
+export const EDGES = {
+  frontRight:  [1, 0, 1],
+  frontLeft:   [-1, 0, 1],
+  backRight:   [1, 0, -1],
+  backLeft:    [-1, 0, -1],
+  topFront:    [0, 1, 1],
+  topBack:     [0, 1, -1],
+  bottomFront: [0, -1, 1],
+  bottomBack:  [0, -1, -1],
+  rightTop:    [1, 1, 0],
+  rightBottom: [1, -1, 0],
+  leftTop:     [-1, 1, 0],
+  leftBottom:  [-1, -1, 0],
+};
+
+export const CORNERS = {
+  frontRightTop:    [1, 1, 1],
+  frontRightBottom: [1, -1, 1],
+  frontLeftTop:     [-1, 1, 1],
+  frontLeftBottom:  [-1, -1, 1],
+  backRightTop:     [1, 1, -1],
+  backRightBottom:  [1, -1, -1],
+  backLeftTop:      [-1, 1, -1],
+  backLeftBottom:   [-1, -1, -1],
+};
+
+for (const [name, dir] of [...Object.entries(EDGES), ...Object.entries(CORNERS)]) {
+  VIEWS[name] = { dir, up: [0, 1, 0] };
+}
+
 // Each face sits half a cube out from the centre along its own axis. CSS has
 // +Y pointing down, so the world-up face is the one rotated about X by +90.
 const FACES = {
@@ -68,7 +101,7 @@ export function cssMatrix(cameraQuaternion) {
  * the top towards you. That is the camera moving the opposite way around the
  * target, about its own up and right axes, so there are no poles to get stuck at.
  */
-export function rotateView(camera, target, dx, dy, radiansPerPixel = 0.01) {
+export function rotateView(camera, target, dx, dy, radiansPerPixel = 0.005) {
   const up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
   const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
   const turn = new THREE.Quaternion()
@@ -87,6 +120,13 @@ const el = (tag, cls, text) => {
   return node;
 };
 
+// CSS grows +Y downward, so a world direction [x, y, z] becomes [x, -y, z].
+const handlePlace = (dir) => {
+  const [x, y, z] = dir;
+  const h = SIZE / 2;
+  return `translate3d(${x * h}px, ${-y * h}px, ${z * h}px)`;
+};
+
 /**
  * Build the view box inside `container`.
  *
@@ -103,6 +143,12 @@ export function createViewCube(container, camera, controls) {
     const node = el('div', 'vc-face', face.label);
     node.dataset.view = name;
     node.style.transform = face.place.replace('H', `${SIZE / 2}px`);
+    cube.appendChild(node);
+  }
+  for (const [name, dir] of [...Object.entries(EDGES), ...Object.entries(CORNERS)]) {
+    const node = el('div', 'vc-handle');
+    node.dataset.view = name;
+    node.style.transform = handlePlace(dir);
     cube.appendChild(node);
   }
   stage.appendChild(cube);

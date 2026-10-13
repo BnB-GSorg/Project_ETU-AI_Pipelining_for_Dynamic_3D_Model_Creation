@@ -104,6 +104,16 @@ def test_face_colors_only_on_outer_faces():
     assert centre["px"] == rubiks.INNER
 
 
+def test_colour_scheme_is_yellow_up_white_down():
+    """The cube is oriented yellow-up / white-down, the standard convention."""
+    assert rubiks.COLORS["py"] == "#ffd500"  # up     yellow
+    assert rubiks.COLORS["ny"] == "#ffffff"  # down   white
+    assert rubiks.COLORS["px"] == "#b71234"  # right  red
+    assert rubiks.COLORS["nx"] == "#ff5800"  # left   orange
+    assert rubiks.COLORS["pz"] == "#009b48"  # front  green
+    assert rubiks.COLORS["nz"] == "#0046ad"  # back   blue
+
+
 def test_layers_cover_every_part():
     model = rubiks.solved()
     declared = {v["id"] for v in rubiks.layers()}

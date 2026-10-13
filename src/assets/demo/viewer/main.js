@@ -29,10 +29,14 @@ const viewcube = createViewCube($('viewbox'), camera, controls);
 // Grabbing the scene mid-flight should win over the animation, not fight it.
 renderer.domElement.addEventListener('pointerdown', viewcube.cancel);
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 1.1));
-const sun = new THREE.DirectionalLight(0xffffff, 1.3);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.2));
+const sun = new THREE.DirectionalLight(0xffffff, 1.2);
 sun.position.set(5, 9, 7);
 scene.add(sun);
+// A soft fill from below, so the underside reads instead of falling to black.
+const fill = new THREE.DirectionalLight(0x8899aa, 0.55);
+fill.position.set(-3, -6, -2);
+scene.add(fill);
 
 function resize() {
   renderer.setSize(window.innerWidth, window.innerHeight);

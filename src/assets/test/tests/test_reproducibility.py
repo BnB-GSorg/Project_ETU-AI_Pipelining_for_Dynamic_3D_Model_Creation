@@ -27,7 +27,7 @@ from etu.ops import sequence
 GOLDEN_DIR = Path(__file__).resolve().parent.parent / "golden"
 GOLDEN_FILE = GOLDEN_DIR / "rubiks_solve.mmi"
 
-GOLDEN_SHA256 = "bb4330156f5b1941c592e0dd3f57b643830428ac20048ff0fabeb4c764dd3ccc"
+GOLDEN_SHA256 = "daa41b66eb7bcaa5693a78177714c252f13caa6e4c70729813301082b9f436ab"
 
 # Exactly what cmd_demo in src/main.py runs, so the rebuild matches the
 # golden file the demo command produces.

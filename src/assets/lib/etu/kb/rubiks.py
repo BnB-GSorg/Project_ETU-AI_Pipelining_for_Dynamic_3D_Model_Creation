@@ -21,9 +21,10 @@ from etu.formats.scene import Box
 from etu.model import Model
 
 # Standard Western colour scheme, keyed by the face normal each colour sits on.
+# Oriented yellow-up / white-down, the common convention for a solved cube.
 COLORS = {
-    "py": "#ffffff",  # up     white
-    "ny": "#ffd500",  # down   yellow
+    "py": "#ffd500",  # up     yellow
+    "ny": "#ffffff",  # down   white
     "px": "#b71234",  # right  red
     "nx": "#ff5800",  # left   orange
     "pz": "#009b48",  # front  green
