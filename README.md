@@ -148,6 +148,13 @@ For detailed instruction about using this  <!-- REPO, please either look at the 
 - **Package manager**: mamba 2.x or conda 26.x
 - **Dependencies**: numpy, opencv — see `environment.yml`
 
+> **Known issue — `ruff=0.16.6` was yanked from conda-forge.** The pinned
+> `ruff=0.16.6` in `environment.yml` and `environment.lock.yml` no longer
+> resolves, so a fresh `mamba env create` fails on that pin. The current 0.16.x
+> release is `0.16.8`. `ruff` is a lint-only tool and does not affect the
+> byte-stable `.mmi` output, so bumping it is safe. Until the pin is updated,
+> reuse an already-built environment rather than recreating from scratch.
+
 ## 🛠 Development
 
 | Action | Command |
