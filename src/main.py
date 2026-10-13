@@ -12,6 +12,20 @@ The pipeline each command is a step of:
 Author: DuBoLEE, MCHIGM
 """
 
+"""
+
+Main
+
+Created: 2026-08-18
+
+Creator: MCHIGM
+
+Last modified: 2026-09-30, MCHIGM, ''
+
+CONTAINS AI-GENERATED CONTENTS
+
+"""
+
 from __future__ import annotations
 
 import logging

@@ -1,5 +1,7 @@
 # Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation
 
+<!--WIP-->
+
 <a href="https://arxiv.org/abs/2401.12345"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-AI Pipelining for Dynamic 3D Model Creation-b31b1b?logo=arxiv&logoColor=white" /></a>
 [![PDF](https://img.shields.io/badge/Research_Gate-2401.12345-b31b1b.svg)](LINK_TO_PAPER)
 [![Paper](https://img.shields.io/badge/ELSEVIER-2401.12345-orange.svg)](LINK_TO_PAPER)
@@ -32,7 +34,7 @@ The engine is **operation-driven**: it builds an exact model of a known object,
 looks up what operations that object supports, turns a written instruction into
 a sequence of them, and records each step as a commit.
 
-[![ETU pipeline overview](src/assets/demo/overview.png)]([src/assets/demo/overview.html](https://bnb-gsorg.github.io/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/workflow/overview.html))
+[![ETU pipeline overview](src/assets/demo/overview.png)](https:/bnb-gsorg.github.io/Project_ETU-AI_Pipelining_for_Dynamic_3D_Model_Creation/workflow/overview.html)
 
 *Interactive version: open `src/assets/demo/overview.html` — pan, zoom, and
 follow the paths.*
@@ -137,6 +139,8 @@ Also `help`, `files`, `version`, `exit`.
 If mamba cannot write its package cache, prefix the create command with
 `CONDA_PKGS_DIRS=src/.env/Python/.pkgs`.
 
+For detailed instruction about using this  <!-- REPO, please either look at the WIKI or the AI agents -->
+
 ## 💻 Requirements
 
 ### Python Engine
@@ -202,7 +206,7 @@ If you use this work in your research, please cite:
 ```bibtex
 @inproceedings{yourpreferredname,
   title={AI Pipelining for Dynamic 3D Model Creation},
-  author={Yueming CHEN, Junming HUANG},
+  author={Yueming CHEN, Junming HUANG, Pak Shing YAN},
   booktitle={...},
   year={2026}
 }

@@ -1,6 +1,11 @@
-"""Shared paths, the file registry, and the engine's terminal I/O.
+"""
 
-by MCHIGM — 20260812
+Shared paths, the file registry, and the engine's terminal I/O.
+
+Author: MCHIGM
+
+Last Updated: 20260812
+
 """
 
 import sys
